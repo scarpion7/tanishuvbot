@@ -8,7 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
-from aiogram.utils.defaults import DefaultBotProperties
+from aiogram.client.default import DefaultBotProperties
 from aiohttp import web
 
 # --- Bot sozlamalari ---
