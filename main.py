@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
+from aiogram.utils.defaults import DefaultBotProperties
 from aiohttp import web
 
 # --- Bot sozlamalari ---
@@ -84,7 +85,10 @@ LOOKING_FOR_OPTIONS = {
 }
 
 # --- Bot va Dispatcher obyektlari ---
-bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(
+    token=BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 dp = Dispatcher()
 
 # --- Inline tugmalar funksiyalari ---
