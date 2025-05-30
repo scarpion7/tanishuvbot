@@ -29,6 +29,7 @@ bot = Bot(
 )
 
 # --- FSM (Finite State Machine) states ---
+# --- FSM (Finite State Machine) states ---
 class Form(StatesGroup):
     language = State()
     gender = State()
@@ -37,6 +38,7 @@ class Form(StatesGroup):
     region = State()
     custom_region = State()
     city = State()
+    custom_city = State() # YANGI QO'SHILDI
     # proof_photo = State() # Removed
     age = State()
     height = State()
@@ -46,7 +48,7 @@ class Form(StatesGroup):
     about_me = State()
     contact = State()
     confirm = State()
-
+    
 # --- Keyboards ---
 TEXTS = {
     "uz": {
