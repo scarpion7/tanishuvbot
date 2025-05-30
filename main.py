@@ -49,7 +49,6 @@ class Form(StatesGroup):
     publish_consent = State() # NEW
     confirm = State()
     
-# --- Keyboards ---
 TEXTS = {
     "uz": {
         "start": "Salom! Botdan foydalanish uchun tilingizni tanlang:",
@@ -63,15 +62,15 @@ TEXTS = {
         "custom_city_prompt": "Iltimos, shahringiz nomini kiriting:",
         "looking_for_prompt": "Nima maqsadda tanishmoqchisiz?",
         "partner_gender_prompt": "Kim bilan tanishmoqchisiz (sherikning jinsi)?",
-        "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35):", # NEW
-        "characteristics_prompt": "O'zingizning yoshingiz, bo'yingiz (sm), og'irligingiz (kg) va boshqa xususiyatlaringizni kiriting (masalan: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi):", # NEW
+        "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35):",
+        "characteristics_prompt": "O'zingizning yoshingiz, bo'yingiz (sm), og'irligingiz (kg) va boshqa xususiyatlaringizni kiriting (masalan: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi):",
         "about_me_prompt": "O'zingiz haqida ma'lumot kiriting (250 belgidan oshmasin):",
         "contact_prompt": "Bog'lanish uchun manzilingizni kiriting (Telegram username, telefon raqam, Instagram linki va hokazo):",
-        "photo_upload_prompt": "Iltimos, profilingiz uchun rasm yuklang (yuzingiz aniq ko'rinishi shart):", # NEW
-        "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, bizning kanalimizga a'zo bo'ling:", # NEW
-        "channel_button_text": "Kanalga a'zo bo'lish", # NEW
-        "not_a_member": "Siz kanalga a'zo emassiz. Iltimos, kanalga a'zo bo'lib, 'Tekshirish' tugmasini bosing.", # NEW
-        "publish_consent_prompt": "Ma'lumotlaringizni kanalga chop etishimizga rozimisiz?", # NEW
+        "photo_upload_prompt": "Iltimos, profilingiz uchun rasm yuklang (yuzingiz aniq ko'rinishi shart):",
+        "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, bizning kanalimizga a'zo bo'ling:",
+        "channel_button_text": "Kanalga a'zo bo'lish",
+        "not_a_member": "Siz kanalga a'zo emassiz. Iltimos, kanalga a'zo bo'lib, 'Tekshirish' tugmasini bosing.",
+        "publish_consent_prompt": "Ma'lumotlaringizni kanalga chop etishimizga rozimisiz?",
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi? Davom etish uchun 'Tasdiqlash' tugmasini bosing.",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
         "profile_template": (
@@ -80,19 +79,20 @@ TEXTS = {
             "<b>🚻 Jinsi:</b> {gender}\n"
             "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
             "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
-            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n" # NEW
-            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n" # NEW
+            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
+            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n"
             "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<a href='{photo_url}'>Rasm</a>\n" # NEW: Photo URL
-            "<a href='https://t.me/example'>Manba: TopTanish</a>" # Example link, will need to be your actual channel link
+            "<a href='{photo_url}'>Rasm</a>\n"
+            "<a href='https://t.me/example'>Manba: TopTanish</a>"
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
-        "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).", # NEW
-        "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi", # NEW
+        "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
+        "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
         "invalid_callback_input": "Noto'g'ri tanlov. Iltimos, inline tugma orqali tanlang.",
         "select_from_options": "Iltimos, berilgan variantlardan birini tanlang.",
-        "text_too_long": "Matn juda uzun. Iltimos, 250 belgidan oshirmang."
+        "text_too_long": "Matn juda uzun. Iltimos, 250 belgidan oshirmang.",
+        "other": "Boshqa" # YANGI QO'SHILDI
     },
     "ru": {
         "start": "Привет! Выберите ваш язык для использования бота:",
@@ -106,15 +106,15 @@ TEXTS = {
         "custom_city_prompt": "Пожалуйста, введите название вашего города:",
         "looking_for_prompt": "С какой целью вы хотите познакомиться?",
         "partner_gender_prompt": "С кем вы хотите познакомиться (пол партнера)?",
-        "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35):", # NEW
-        "characteristics_prompt": "Введите свой возраст, рост (см), вес (кг) и другие характеристики (например: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен):", # NEW
+        "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35):",
+        "characteristics_prompt": "Введите свой возраст, рост (см), вес (кг) и другие характеристики (например: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен):",
         "about_me_prompt": "Введите информацию о себе (не более 250 символов):",
         "contact_prompt": "Введите ваш контакт (имя пользователя Telegram, номер телефона, ссылка на Instagram и т.д.):",
-        "photo_upload_prompt": "Пожалуйста, загрузите фото для вашего профиля (лицо должно быть хорошо видно):", # NEW
-        "channel_check_prompt": "Перед публикацией вашей заявки на канале, пожалуйста, подпишитесь на наш канал:", # NEW
-        "channel_button_text": "Подписаться на канал", # NEW
-        "not_a_member": "Вы не подписаны на канал. Пожалуйста, подпишитесь на канал и нажмите кнопку 'Проверить'.", # NEW
-        "publish_consent_prompt": "Вы согласны на публикацию ваших данных на канале?", # NEW
+        "photo_upload_prompt": "Пожалуйста, загрузите фото для вашего профиля (лицо должно быть хорошо видно):",
+        "channel_check_prompt": "Перед публикацией вашей заявки на канале, пожалуйста, подпишитесь на наш канал:",
+        "channel_button_text": "Подписаться на канал",
+        "not_a_member": "Вы не подписаны на канал. Пожалуйста, подпишитесь на канал и нажмите кнопку 'Проверить'.",
+        "publish_consent_prompt": "Вы согласны на публикацию ваших данных на канале?",
         "confirm_prompt": "Ваши данные верны? Нажмите 'Подтвердить' для продолжения.",
         "thank_you": "Ваша заявка принята. Скоро она будет размещена на канале.",
         "profile_template": (
@@ -123,19 +123,20 @@ TEXTS = {
             "<b>🚻 Пол:</b> {gender}\n"
             "<b>🔍 Цель:</b> {looking_for_type}\n"
             "<b>👫 Искомый пол:</b> {partner_gender}\n"
-            "<b>🔢 Искомый возраст:</b> {partner_age}\n" # NEW
-            "<b>📝 О себе (характеристики):</b> {characteristics}\n" # NEW
+            "<b>🔢 Искомый возраст:</b> {partner_age}\n"
+            "<b>📝 О себе (характеристики):</b> {characteristics}\n"
             "<b>✍️ О себе:</b> {about_me}\n"
             "<b>📞 Контакт:</b> {contact}\n"
-            "<a href='{photo_url}'>Фото</a>\n" # NEW: Photo URL
-            "<a href='https://t.me/example'>Источник: TopTanish</a>" # Example link, will need to be your actual channel link
+            "<a href='{photo_url}'>Фото</a>\n"
+            "<a href='https://t.me/example'>Источник: TopTanish</a>"
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
-        "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).", # NEW
-        "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен", # NEW
+        "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).",
+        "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен",
         "invalid_callback_input": "Неверный выбор. Пожалуйста, выберите с помощью встроенной кнопки.",
         "select_from_options": "Пожалуйста, выберите один из предложенных вариантов.",
-        "text_too_long": "Текст слишком длинный. Пожалуйста, не превышайте 250 символов."
+        "text_too_long": "Текст слишком длинный. Пожалуйста, не превышайте 250 символов.",
+        "other": "Другое" # YANGI QO'SHILDI
     }
 }
 
