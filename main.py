@@ -28,7 +28,8 @@ bot = Bot(
     default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
 
-# --- FSM (Finite State Machine) states ---\nclass Form(StatesGroup):
+# --- FSM (Finite State Machine) states ---
+class Form(StatesGroup):
     language = State()
     gender = State()
     # proof_voice = State() # Removed
