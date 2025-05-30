@@ -728,7 +728,7 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
         application_text = (
             f"{TEXTS[lang]['new_application_title']}"
             f"<b>{TEXTS[lang]['user_label']}</b> <a href='tg://user?id={user_id}'>{full_name} (@{username})</a>\n"
-           f"<b>{TEXTS[lang]['gender_label']}</b> {TEXTS[lang].get(f'gender_{user_data.get('gender')}', TEXTS[lang]['unknown'])}"
+            f"<b>{TEXTS[lang]['gender_label']}</b> {TEXTS[lang].get(f'gender_{user_data.get('gender')}', TEXTS[lang]['unknown'])}"
             f"<b>{TEXTS[lang]['country_label']}</b> {user_data.get('country_name', TEXTS[lang]['not_selected'])}\n"
             f"<b>{TEXTS[lang]['region_label']}</b> {user_data.get('region_name', TEXTS[lang]['not_selected'])}\n"
             f"<b>{TEXTS[lang]['district_label']}</b> {user_data.get('district_name', TEXTS[lang]['not_selected'])}\n"
