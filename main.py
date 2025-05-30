@@ -52,7 +52,7 @@ class Form(StatesGroup):
 # --- Multilingual Texts ---
 TEXTS = {
     "uz": {
-        "start_message": "Assalomu alaykum! Arizani to'ldirish uchun tilni tanlang:",
+        "start_message": "Assalomu alaykum! Arizani to'ldirish uchun tilni tanlang:\n Здравствуйте! Выберите язык для заполнения анкеты:\n Hello! Please select a language to fill out the application:",
         "gender_prompt": "Jinsingizni tanlang:",
         "gender_male": "♂️ Erkak",
         "gender_female": "♀️ Ayol",
@@ -289,7 +289,7 @@ AGE_OPTIONS = {
 }
 
 LOOKING_FOR_OPTIONS = {
-    "serious_relationship": {"uz": "Jiddiy munosabat", "ru": "Серьезные отношения", "en": "Serious relationship"},
+    "serious_relationship": {"uz": "Intim munosabat 18+ ", "ru": "Интимные отношения 18+", "en": "Intim relationship 18+"},
     "marriage": {"uz": "Nikoh", "ru": "Брак", "en": "Marriage"},
     "friendship": {"uz": "Do'stlik", "ru": "Дружба", "en": "Friendship"},
     "just_chat": {"uz": "Faqat suhbat", "ru": "Просто общение", "en": "Just chat"},
