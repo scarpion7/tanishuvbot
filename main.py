@@ -32,7 +32,7 @@ bot = Bot(
 class Form(StatesGroup):
     language = State()
     gender = State()
-    proof_voice = State()
+    # proof_voice = State() # Removed
     country = State()
     region = State()
     custom_region = State()
@@ -385,30 +385,31 @@ def get_confirm_keyboard(lang: str):
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 # --- Utility Functions ---
-def generate_random_proof_text(lang: str) -> str:
-    """Generates a random text for voice proof."""
-    phrases = {
-        "uz": [
-            "Men bot orqali ariza to'ldirmoqdaman.",
-            "Bu mening haqiqiy ovozim.",
-            "Men shaxsiy ma'lumotlarimni tasdiqlayman."
-        ],
-        "ru": [
-            "Я заполняю анкету через бота.",
-            "Это мой настоящий голос.",
-            "Я подтверждаю свои личные данные."
-        ],
-        "en": [
-            "I am filling out an application through the bot.",
-            "This is my real voice.",
-            "I confirm my personal data."
-        ]
-    }
-    return random.choice(phrases[lang])
+# def generate_random_proof_text(lang: str) -> str: # Removed
+#     """Generates a random text for voice proof."""
+#     phrases = {
+#         "uz": [
+#             "Men bot orqali ariza to'ldirmoqdaman.",
+#             "Bu mening haqiqiy ovozim.",
+#             "Men shaxsiy ma'lumotlarimni tasdiqlayman."
+#         ],
+#         "ru": [
+#             "Я заполняю анкету через бота.",
+#             "Это мой настоящий голос.",
+#             "Я подтверждаю свои личные данные."
+#         ],
+#         "en": [
+#             "I am filling out an application through the bot.",
+#             "This is my real voice.",
+#             "I confirm my personal data."
+#         ]
+#     }
+#     return random.choice(phrases[lang])
 
 async def generate_summary_message(user_data: dict, lang: str) -> str:
     """Generates a summary message of the user's application."""
-    gender_display = TEXTS[lang].get(f"gender_{user_data.get('gender', 'unknown')}", TEXTS[lang]["unknown"])
+    gender_key = user_data.get('gender', 'unknown')
+    gender_display = TEXTS[lang].get(f"gender_{gender_key}", TEXTS[lang]["unknown"])
     country_display = user_data.get("country_name", TEXTS[lang]["not_selected"])
     region_display = user_data.get("region_name", TEXTS[lang]["not_selected"])
     district_display = user_data.get("district_name", TEXTS[lang]["not_selected"])
@@ -463,31 +464,26 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
     gender_key = callback_query.data.split("_")[1]
     await state.update_data(gender=gender_key)
 
-    if gender_key in ["male", "female"]:
-        proof_text = generate_random_proof_text(lang)
-        await state.update_data(proof_text=proof_text)
-        await state.set_state(Form.proof_voice)
-        await callback_query.message.edit_text(TEXTS[lang]["proof_voice_prompt"].format(proof_text=proof_text))
-    else: # family
-        await state.set_state(Form.country)
-        await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_countries_keyboard(lang))
+    # Removed voice proof logic. Directly proceed to country selection.
+    await state.set_state(Form.country)
+    await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_countries_keyboard(lang))
     await callback_query.answer()
 
-@dp.message(Form.proof_voice, F.content_type == types.ContentType.VOICE)
-async def process_proof_voice(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.voice:
-        await state.set_state(Form.country)
-        await message.answer(TEXTS[lang]["voice_received"], reply_markup=get_countries_keyboard(lang))
-    else:
-        await message.answer(TEXTS[lang]["invalid_voice"])
+# @dp.message(Form.proof_voice, F.content_type == types.ContentType.VOICE) # Removed
+# async def process_proof_voice(message: Message, state: FSMContext):
+#     user_data = await state.get_data()
+#     lang = user_data.get("lang", "uz")
+#     if message.voice:
+#         await state.set_state(Form.country)
+#         await message.answer(TEXTS[lang]["voice_received"], reply_markup=get_countries_keyboard(lang))
+#     else:
+#         await message.answer(TEXTS[lang]["invalid_voice"])
 
-@dp.message(Form.proof_voice)
-async def process_proof_voice_invalid(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["invalid_voice"])
+# @dp.message(Form.proof_voice) # Removed
+# async def process_proof_voice_invalid(message: Message, state: FSMContext):
+#     user_data = await state.get_data()
+#     lang = user_data.get("lang", "uz")
+#     await message.answer(TEXTS[lang]["invalid_voice"])
 
 @dp.callback_query(Form.country, F.data.startswith("country_"))
 async def process_country(callback_query: CallbackQuery, state: FSMContext):
@@ -725,10 +721,14 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
         username = callback_query.from_user.username if callback_query.from_user.username else "Noma'lum"
         full_name = callback_query.from_user.full_name
 
+        # Fixed f-string syntax
+        gender_value = user_data.get('gender')
+        gender_display_text = TEXTS[lang].get(f'gender_{gender_value}', TEXTS[lang]['unknown'])
+
         application_text = (
             f"{TEXTS[lang]['new_application_title']}"
             f"<b>{TEXTS[lang]['user_label']}</b> <a href='tg://user?id={user_id}'>{full_name} (@{username})</a>\n"
-            f"<b>{TEXTS[lang]['gender_label']}</b> {TEXTS[lang].get(f'gender_{user_data.get('gender')}', TEXTS[lang]['unknown'])}"
+            f"<b>{TEXTS[lang]['gender_label']}</b> {gender_display_text}\n" # Fixed here
             f"<b>{TEXTS[lang]['country_label']}</b> {user_data.get('country_name', TEXTS[lang]['not_selected'])}\n"
             f"<b>{TEXTS[lang]['region_label']}</b> {user_data.get('region_name', TEXTS[lang]['not_selected'])}\n"
             f"<b>{TEXTS[lang]['district_label']}</b> {user_data.get('district_name', TEXTS[lang]['not_selected'])}\n"
@@ -771,13 +771,14 @@ async def back_button_handler(callback_query: CallbackQuery, state: FSMContext):
     elif target_state_name == "gender":
         await state.set_state(Form.gender)
         await callback_query.message.edit_text(TEXTS[lang]["gender_prompt"], reply_markup=get_gender_keyboard(lang))
-    elif target_state_name == "proof_voice":
-        proof_text = user_data.get("proof_text")
-        if not proof_text:
-            proof_text = generate_random_proof_text(lang)
-            await state.update_data(proof_text=proof_text)
-        await state.set_state(Form.proof_voice)
-        await callback_query.message.edit_text(TEXTS[lang]["proof_voice_prompt"].format(proof_text=proof_text))
+    # Removed handling for back_to_proof_voice
+    # elif target_state_name == "proof_voice":
+    #     proof_text = user_data.get("proof_text")
+    #     if not proof_text:
+    #         proof_text = generate_random_proof_text(lang)
+    #         await state.update_data(proof_text=proof_text)
+    #     await state.set_state(Form.proof_voice)
+    #     await callback_query.message.edit_text(TEXTS[lang]["proof_voice_prompt"].format(proof_text=proof_text))
     elif target_state_name == "country":
         await state.set_state(Form.country)
         await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_countries_keyboard(lang))
