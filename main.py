@@ -382,15 +382,23 @@ async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     looking_for_key = callback_query.data.split("_")[1]
+
+    # DEBUG: Qaysi kalit qabul qilinayotganini ko'rish
+    print(f"DEBUG: Qabul qilingan 'looking_for_key': {looking_for_key} foydalanuvchi {callback_query.from_user.id} uchun")
+    print(f"DEBUG: callback_data to'lig'icha: {callback_query.data}")
+
+
     if looking_for_key in LOOKING_FOR_OPTIONS:
-        await state.update_data(looking_for_type_key=looking_for_key) # Save key for conditional logic
+        print(f"DEBUG: '{looking_for_key}' LOOKING_FOR_OPTIONS ichida topildi.")
+        await state.update_data(looking_for_type_key=looking_for_key) # Shartli mantiq uchun kalitni saqlaymiz
         await state.update_data(looking_for_type=LOOKING_FOR_OPTIONS[looking_for_key][lang])
-        
-        # Pass looking_for_key to get_partner_gender_keyboard for conditional options
+
+        # Keyingi holatga o'tish
         await state.set_state(Form.partner_gender)
         await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"], reply_markup=get_partner_gender_keyboard(lang, looking_for_key))
     else:
-        print(f"DEBUG: Invalid looking_for_key received: {looking_for_key} from callback_data: {callback_query.data}")
+        # DEBUG: Nima uchun topilmaganini ko'rish
+        print(f"DEBUG: '{looking_for_key}' LOOKING_FOR_OPTIONS ichida topilmadi. Qayta urinish.")
         await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_looking_for_keyboard(lang))
     await callback_query.answer()
 
