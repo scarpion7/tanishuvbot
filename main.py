@@ -29,24 +29,24 @@ bot = Bot(
 )
 
 # --- FSM (Finite State Machine) states ---
-# --- FSM (Finite State Machine) states ---
 class Form(StatesGroup):
     language = State()
     gender = State()
-    # proof_voice = State() # Removed
     country = State()
     region = State()
     custom_region = State()
     city = State()
-    custom_city = State() # YANGI QO'SHILDI
-    # proof_photo = State() # Removed
-    age = State()
-    height = State()
-    weight = State()
-    looking_for_type = State()
+    custom_city = State()
+    # Removed: age, height, weight from initial form, they will be part of characteristics or partner_age
+    looking_for_type = State() # This will be "Munosabat"
     partner_gender = State()
+    partner_age = State() # NEW
+    characteristics = State() # NEW for "xususiyatlari"
     about_me = State()
     contact = State()
+    photo_upload = State() # NEW
+    channel_check = State() # NEW
+    publish_consent = State() # NEW
     confirm = State()
     
 # --- Keyboards ---
@@ -61,32 +61,35 @@ TEXTS = {
         "custom_region_prompt": "Iltimos, viloyatingiz nomini kiriting:",
         "city_prompt": "Shahringizni tanlang yoki kiriting:",
         "custom_city_prompt": "Iltimos, shahringiz nomini kiriting:",
-        "age_prompt": "Yoshingizni kiriting:",
-        "height_prompt": "Bo'yingizni smda kiriting (masalan, 175):",
-        "weight_prompt": "Og'irligingizni kgda kiriting (masalan, 70):",
         "looking_for_prompt": "Nima maqsadda tanishmoqchisiz?",
         "partner_gender_prompt": "Kim bilan tanishmoqchisiz (sherikning jinsi)?",
-        "about_me_prompt": "O'zingiz haqingizda ma'lumot kiriting (250 belgidan oshmasin):",
+        "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35):", # NEW
+        "characteristics_prompt": "O'zingizning yoshingiz, bo'yingiz (sm), og'irligingiz (kg) va boshqa xususiyatlaringizni kiriting (masalan: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi):", # NEW
+        "about_me_prompt": "O'zingiz haqida ma'lumot kiriting (250 belgidan oshmasin):",
         "contact_prompt": "Bog'lanish uchun manzilingizni kiriting (Telegram username, telefon raqam, Instagram linki va hokazo):",
+        "photo_upload_prompt": "Iltimos, profilingiz uchun rasm yuklang (yuzingiz aniq ko'rinishi shart):", # NEW
+        "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, bizning kanalimizga a'zo bo'ling:", # NEW
+        "channel_button_text": "Kanalga a'zo bo'lish", # NEW
+        "not_a_member": "Siz kanalga a'zo emassiz. Iltimos, kanalga a'zo bo'lib, 'Tekshirish' tugmasini bosing.", # NEW
+        "publish_consent_prompt": "Ma'lumotlaringizni kanalga chop etishimizga rozimisiz?", # NEW
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi? Davom etish uchun 'Tasdiqlash' tugmasini bosing.",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
         "profile_template": (
             "<b>🙋‍♂️ Ism:</b> {full_name}\n"
             "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
             "<b>🚻 Jinsi:</b> {gender}\n"
-            "<b>📆 Yoshi:</b> {age}\n"
-            "<b>📏 Bo'yi:</b> {height} sm\n"
-            "<b>⚖️ Og'irligi:</b> {weight} kg\n"
             "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
             "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
+            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n" # NEW
+            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n" # NEW
             "<b>✍️ O'zi haqida:</b> {about_me}\n"
             "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<a href='https://t.me/example'>Manba: TopTanish</a>" # Example link
+            "<a href='{photo_url}'>Rasm</a>\n" # NEW: Photo URL
+            "<a href='https://t.me/example'>Manba: TopTanish</a>" # Example link, will need to be your actual channel link
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
-        "invalid_age": "Yoshingizni sonlarda kiriting.",
-        "invalid_height": "Bo'yingizni sonlarda kiriting.",
-        "invalid_weight": "Og'irligingizni sonlarda kiriting.",
+        "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).", # NEW
+        "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi", # NEW
         "invalid_callback_input": "Noto'g'ri tanlov. Iltimos, inline tugma orqali tanlang.",
         "select_from_options": "Iltimos, berilgan variantlardan birini tanlang.",
         "text_too_long": "Matn juda uzun. Iltimos, 250 belgidan oshirmang."
@@ -101,32 +104,35 @@ TEXTS = {
         "custom_region_prompt": "Пожалуйста, введите название вашего региона:",
         "city_prompt": "Выберите или введите ваш город:",
         "custom_city_prompt": "Пожалуйста, введите название вашего города:",
-        "age_prompt": "Введите ваш возраст:",
-        "height_prompt": "Введите ваш рост в см (например, 175):",
-        "weight_prompt": "Введите ваш вес в кг (например, 70):",
         "looking_for_prompt": "С какой целью вы хотите познакомиться?",
         "partner_gender_prompt": "С кем вы хотите познакомиться (пол партнера)?",
+        "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35):", # NEW
+        "characteristics_prompt": "Введите свой возраст, рост (см), вес (кг) и другие характеристики (например: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен):", # NEW
         "about_me_prompt": "Введите информацию о себе (не более 250 символов):",
         "contact_prompt": "Введите ваш контакт (имя пользователя Telegram, номер телефона, ссылка на Instagram и т.д.):",
+        "photo_upload_prompt": "Пожалуйста, загрузите фото для вашего профиля (лицо должно быть хорошо видно):", # NEW
+        "channel_check_prompt": "Перед публикацией вашей заявки на канале, пожалуйста, подпишитесь на наш канал:", # NEW
+        "channel_button_text": "Подписаться на канал", # NEW
+        "not_a_member": "Вы не подписаны на канал. Пожалуйста, подпишитесь на канал и нажмите кнопку 'Проверить'.", # NEW
+        "publish_consent_prompt": "Вы согласны на публикацию ваших данных на канале?", # NEW
         "confirm_prompt": "Ваши данные верны? Нажмите 'Подтвердить' для продолжения.",
         "thank_you": "Ваша заявка принята. Скоро она будет размещена на канале.",
         "profile_template": (
             "<b>🙋‍♂️ Имя:</b> {full_name}\n"
             "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
             "<b>🚻 Пол:</b> {gender}\n"
-            "<b>📆 Возраст:</b> {age}\n"
-            "<b>📏 Рост:</b> {height} см\n"
-            "<b>⚖️ Вес:</b> {weight} кг\n"
             "<b>🔍 Цель:</b> {looking_for_type}\n"
             "<b>👫 Искомый пол:</b> {partner_gender}\n"
+            "<b>🔢 Искомый возраст:</b> {partner_age}\n" # NEW
+            "<b>📝 О себе (характеристики):</b> {characteristics}\n" # NEW
             "<b>✍️ О себе:</b> {about_me}\n"
             "<b>📞 Контакт:</b> {contact}\n"
-            "<a href='https://t.me/example'>Источник: TopTanish</a>" # Example link
+            "<a href='{photo_url}'>Фото</a>\n" # NEW: Photo URL
+            "<a href='https://t.me/example'>Источник: TopTanish</a>" # Example link, will need to be your actual channel link
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
-        "invalid_age": "Введите ваш возраст цифрами.",
-        "invalid_height": "Введите ваш рост цифрами.",
-        "invalid_weight": "Введите ваш вес цифрами.",
+        "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).", # NEW
+        "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен", # NEW
         "invalid_callback_input": "Неверный выбор. Пожалуйста, выберите с помощью встроенной кнопки.",
         "select_from_options": "Пожалуйста, выберите один из предложенных вариантов.",
         "text_too_long": "Текст слишком длинный. Пожалуйста, не превышайте 250 символов."
@@ -135,21 +141,23 @@ TEXTS = {
 
 GENDER_OPTIONS = {
     "male": {"uz": "Erkak 🙋‍♂️", "ru": "Мужчина 🙋‍♂️"},
-    "female": {"uz": "Ayol 🙋‍♀️", "ru": "Женщина 🙋‍♀️"}
+    "female": {"uz": "Ayol 🙋‍♀️", "ru": "Женщина 🙋‍♀️"},
+    "family": {"uz": "Oila 👨‍👩‍👧‍👦", "ru": "Семья 👨‍👩‍👧‍👦"} # Added Family
 }
 
 LOOKING_FOR_OPTIONS = {
-    "serious_relationship": {"uz": "Intim munosabat 18+", "ru": "Интимные отношения"},
+    "intimate_18": {"uz": "Intim munosabat 18+", "ru": "Интимные отношения 18+"}, # Modified key and text
     "friendship": {"uz": "Do'stlik", "ru": "Дружба"},
-    "dating": {"uz": "Uchrashuv", "ru": "Свидания"},
-    "marriage": {"uz": "Turmush qurish", "ru": "Брак"},
+    "marriage": {"uz": "Nikoh", "ru": "Брак"},
+    "pleasant_chat": {"uz": "Yoqimli suhbat", "ru": "Приятное общение"}, # New
+    "no_preference": {"uz": "Farqi yo'q", "ru": "Неважно"} # Modified from "dating" or "any"
 }
 
 PARTNER_GENDER_OPTIONS = {
     "male": {"uz": "Erkak 🙋‍♂️", "ru": "Мужчина 🙋‍♂️"},
     "female": {"uz": "Ayol 🙋‍♀️", "ru": "Женщина 🙋‍♀️"},
-    "any": {"uz": "Farqi yo'q", "ru": "Неважно"},
-    "family": {"uz": "Oilani", "ru": "Семью"} # YANGI QO'SHILDI
+    "family": {"uz": "Oila 👨‍👩‍👧‍👦", "ru": "Семья 👨‍👩‍👧‍👦"}, # Added Family
+    "any": {"uz": "Farqi yo'q", "ru": "Неважно"} # Keep "any" for flexibility if not intim
 }
 
 # Qolgan kod o'zgarishsiz qoladi
@@ -232,10 +240,32 @@ def get_looking_for_keyboard(lang: str):
         keyboard.append([InlineKeyboardButton(text=value[lang], callback_data=f"looking_{key}")])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
-def get_partner_gender_keyboard(lang: str):
+def get_partner_gender_keyboard(lang: str, looking_for_type: str = None):
     keyboard = []
-    for key, value in PARTNER_GENDER_OPTIONS.items():
+    if looking_for_type == "intimate_18":
+        # If "Intim munosabat 18+" was chosen, only show Male, Female, Family
+        options = {k: v for k, v in PARTNER_GENDER_OPTIONS.items() if k in ["male", "female", "family"]}
+    else:
+        # Otherwise, show all options including "Farqi yo'q"
+        options = PARTNER_GENDER_OPTIONS
+    
+    for key, value in options.items():
         keyboard.append([InlineKeyboardButton(text=value[lang], callback_data=f"partner_gender_{key}")])
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def get_channel_check_keyboard(lang: str):
+    keyboard = [
+        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/your_channel_username")], # REPLACE with your channel link
+        [InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+def get_publish_consent_keyboard(lang: str):
+    keyboard = [
+        [InlineKeyboardButton(text="✅ Roziman", callback_data="consent_yes")],
+        [InlineKeyboardButton(text="❌ Rad etaman", callback_data="consent_no")]
+    ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 def get_confirm_keyboard(lang: str):
@@ -245,7 +275,10 @@ def get_confirm_keyboard(lang: str):
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
+
 # --- Handlers ---
+dp = Dispatcher(storage=MemoryStorage())
+
 @dp.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
     await state.set_state(Form.language)
@@ -265,9 +298,12 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     gender = callback_query.data.split("_")[1]
-    await state.update_data(gender=GENDER_OPTIONS[gender][lang])
-    await state.set_state(Form.country)
-    await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
+    if gender in GENDER_OPTIONS:
+        await state.update_data(gender=GENDER_OPTIONS[gender][lang])
+        await state.set_state(Form.country)
+        await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
+    else:
+        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_gender_keyboard(lang))
     await callback_query.answer()
 
 @dp.callback_query(Form.country, F.data.startswith("country_"))
@@ -276,13 +312,12 @@ async def process_country(callback_query: CallbackQuery, state: FSMContext):
     lang = user_data.get("lang", "uz")
     country_key = callback_query.data.split("_")[1]
     
-    # Store the actual text of the country, not the key
     selected_country_text = COUNTRIES.get(country_key, country_key) 
     
     await state.update_data(country=selected_country_text)
 
     if country_key == "other":
-        await state.set_state(Form.custom_region) # Skip region, go straight to custom region for "Other" country
+        await state.set_state(Form.custom_region) 
         await callback_query.message.edit_text(TEXTS[lang]["custom_region_prompt"])
     else:
         await state.set_state(Form.region)
@@ -326,8 +361,8 @@ async def process_city(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(TEXTS[lang]["custom_city_prompt"])
     else:
         await state.update_data(city=city)
-        await state.set_state(Form.age)
-        await callback_query.message.edit_text(TEXTS[lang]["age_prompt"])
+        await state.set_state(Form.looking_for_type) # Changed flow here
+        await callback_query.message.edit_text(TEXTS[lang]["looking_for_prompt"], reply_markup=get_looking_for_keyboard(lang))
     await callback_query.answer()
 
 @dp.message(Form.custom_city)
@@ -336,55 +371,10 @@ async def process_custom_city(message: Message, state: FSMContext):
     lang = user_data.get("lang", "uz")
     if message.text:
         await state.update_data(city=message.text)
-        await state.set_state(Form.age)
-        await message.answer(TEXTS[lang]["age_prompt"])
+        await state.set_state(Form.looking_for_type) # Changed flow here
+        await message.answer(TEXTS[lang]["looking_for_prompt"], reply_markup=get_looking_for_keyboard(lang))
     else:
         await message.answer(TEXTS[lang]["invalid_input"])
-
-@dp.message(StateFilter(Form.age))
-async def process_age(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.text and message.text.isdigit():
-        age = int(message.text)
-        if 18 <= age <= 99: # Example age range
-            await state.update_data(age=age)
-            await state.set_state(Form.height)
-            await message.answer(TEXTS[lang]["height_prompt"])
-        else:
-            await message.answer(TEXTS[lang]["invalid_age"])
-    else:
-        await message.answer(TEXTS[lang]["invalid_age"])
-
-@dp.message(StateFilter(Form.height))
-async def process_height(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.text and message.text.isdigit():
-        height = int(message.text)
-        if 100 <= height <= 250: # Example height range
-            await state.update_data(height=height)
-            await state.set_state(Form.weight)
-            await message.answer(TEXTS[lang]["weight_prompt"])
-        else:
-            await message.answer(TEXTS[lang]["invalid_height"])
-    else:
-        await message.answer(TEXTS[lang]["invalid_height"])
-
-@dp.message(StateFilter(Form.weight))
-async def process_weight(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.text and message.text.isdigit():
-        weight = int(message.text)
-        if 30 <= weight <= 200: # Example weight range
-            await state.update_data(weight=weight)
-            await state.set_state(Form.looking_for_type)
-            await message.answer(TEXTS[lang]["looking_for_prompt"], reply_markup=get_looking_for_keyboard(lang))
-        else:
-            await message.answer(TEXTS[lang]["invalid_weight"])
-    else:
-        await message.answer(TEXTS[lang]["invalid_weight"])
 
 @dp.callback_query(Form.looking_for_type, F.data.startswith("looking_"))
 async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
@@ -392,9 +382,12 @@ async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
     lang = user_data.get("lang", "uz")
     looking_for_key = callback_query.data.split("_")[1]
     if looking_for_key in LOOKING_FOR_OPTIONS:
+        await state.update_data(looking_for_type_key=looking_for_key) # Save key for conditional logic
         await state.update_data(looking_for_type=LOOKING_FOR_OPTIONS[looking_for_key][lang])
+        
+        # Pass looking_for_key to get_partner_gender_keyboard for conditional options
         await state.set_state(Form.partner_gender)
-        await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"], reply_markup=get_partner_gender_keyboard(lang))
+        await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"], reply_markup=get_partner_gender_keyboard(lang, looking_for_key))
     else:
         print(f"DEBUG: Invalid looking_for_key received: {looking_for_key} from callback_data: {callback_query.data}")
         await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_looking_for_keyboard(lang))
@@ -404,14 +397,53 @@ async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
 async def process_partner_gender(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    partner_gender_key = callback_query.data.split("_")[2]
-    if partner_gender_key in PARTNER_GENDER_OPTIONS:
-        await state.update_data(partner_gender=PARTNER_GENDER_OPTIONS[partner_gender_key][lang])
-        await state.set_state(Form.about_me)
-        await callback_query.message.edit_text(TEXTS[lang]["about_me_prompt"])
-    else:
+    partner_gender_key = callback_query.data.split("_")[2] # Adjusted split index
+
+    # Check if the chosen partner_gender_key is valid
+    if partner_gender_key not in PARTNER_GENDER_OPTIONS:
         await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_partner_gender_keyboard(lang))
+        await callback_query.answer()
+        return
+
+    # Special handling for "family" option only if "intimate_18" was chosen previously
+    if user_data.get("looking_for_type_key") == "intimate_18" and partner_gender_key not in ["male", "female", "family"]:
+        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_partner_gender_keyboard(lang, "intimate_18"))
+        await callback_query.answer()
+        return
+
+    await state.update_data(partner_gender=PARTNER_GENDER_OPTIONS[partner_gender_key][lang])
+    await state.set_state(Form.partner_age) # NEW state transition
+    await callback_query.message.edit_text(TEXTS[lang]["partner_age_prompt"])
     await callback_query.answer()
+
+@dp.message(StateFilter(Form.partner_age))
+async def process_partner_age(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    # Basic validation for age range (e.g., "20-30" or "30+")
+    if message.text and (len(message.text.split('-')) == 2 and all(p.isdigit() for p in message.text.split('-')) or message.text.endswith('+') and message.text[:-1].isdigit()):
+        await state.update_data(partner_age=message.text)
+        await state.set_state(Form.characteristics) # NEW state transition
+        await message.answer(TEXTS[lang]["characteristics_prompt"])
+    else:
+        await message.answer(TEXTS[lang]["invalid_age_format"])
+
+@dp.message(StateFilter(Form.characteristics))
+async def process_characteristics(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    if message.text:
+        # You might want to add more robust validation here for characteristics
+        # For now, just check length
+        if len(message.text) <= 250: # Assuming characteristics also have length limit
+            await state.update_data(characteristics=message.text)
+            await state.set_state(Form.about_me) # Transition to existing about_me
+            await message.answer(TEXTS[lang]["about_me_prompt"])
+        else:
+            await message.answer(TEXTS[lang]["text_too_long"]) # Reuse text too long
+    else:
+        await message.answer(TEXTS[lang]["invalid_characteristics"])
+
 
 @dp.message(StateFilter(Form.about_me))
 async def process_about_me(message: Message, state: FSMContext):
@@ -430,31 +462,108 @@ async def process_contact(message: Message, state: FSMContext):
     lang = user_data.get("lang", "uz")
     if message.text:
         await state.update_data(contact=message.text)
-        
+        await state.set_state(Form.photo_upload) # NEW state transition
+        await message.answer(TEXTS[lang]["photo_upload_prompt"])
+    else:
+        await message.answer(TEXTS[lang]["invalid_input"])
+
+@dp.message(StateFilter(Form.photo_upload), F.photo)
+async def process_photo_upload(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    
+    # Get the file ID of the largest photo
+    photo_file_id = message.photo[-1].file_id
+    
+    # You can get the file path or download it here if needed for permanent storage
+    # For now, we'll store the file_id and later get its URL for the channel post
+    await state.update_data(photo_file_id=photo_file_id)
+
+    await state.set_state(Form.channel_check) # NEW state transition
+    await message.answer(TEXTS[lang]["channel_check_prompt"], reply_markup=get_channel_check_keyboard(lang))
+
+@dp.message(StateFilter(Form.photo_upload)) # Handle non-photo input in photo state
+async def handle_invalid_photo_input(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    await message.answer(TEXTS[lang]["photo_upload_prompt"]) # Re-prompt for photo
+
+@dp.callback_query(Form.channel_check, F.data == "check_channel_member")
+async def check_channel_membership(callback_query: CallbackQuery, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+
+    user_status = await bot.get_chat_member(CHANNEL_ID, callback_query.from_user.id)
+    if user_status.status in ["member", "administrator", "creator"]:
+        await state.set_state(Form.publish_consent) # NEW state transition
+        await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"], reply_markup=get_publish_consent_keyboard(lang))
+    else:
+        await callback_query.message.edit_text(TEXTS[lang]["not_a_member"], reply_markup=get_channel_check_keyboard(lang))
+    await callback_query.answer()
+
+
+@dp.callback_query(Form.publish_consent, F.data.startswith("consent_"))
+async def request_publish_consent(callback_query: CallbackQuery, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    consent = callback_query.data.split("_")[1]
+
+    if consent == "yes":
         # Get full name from user's message object
-        full_name = message.from_user.full_name if message.from_user else "Noma'lum"
+        full_name = callback_query.from_user.full_name if callback_query.from_user else "Noma'lum"
         await state.update_data(full_name=full_name) # Save full name to state
 
         # Display confirmation
         final_data = await state.get_data()
+        
+        # Get photo URL
+        photo_file_id = final_data.get("photo_file_id")
+        photo_url = "https://t.me/example" # Default or placeholder
+        if photo_file_id:
+            try:
+                # You need to get a direct file URL for the photo to display it in channel
+                # This requires either:
+                # 1. Downloading the file and serving it yourself (complex)
+                # 2. Using bot.get_file to get file_path and then construct Telegram file URL (limited time)
+                # For simplicity, let's assume a placeholder for now, or use a method that returns a persistent URL.
+                # A common approach is to upload to a public image hosting or just send the photo directly to the channel.
+                # If you need a persistent URL, you'll need to implement file download and hosting.
+                # For basic use, file_id can be used by Telegram clients to display the photo directly when sent.
+                # For the template, we need a URL. For demonstration, we'll use a placeholder.
+                # In a real scenario, you'd send the photo directly to the channel in process_confirm_yes
+                # and then optionally send the text message separately, or caption the photo.
+                
+                # For now, let's make a dummy link or leave it blank if no direct URL is generated
+                # file_info = await bot.get_file(photo_file_id)
+                # photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+                photo_url = "https://example.com/your_photo_link.jpg" # Placeholder or actual URL after processing
+                
+            except Exception as e:
+                print(f"Error getting photo URL: {e}")
+                photo_url = "https://t.me/example" # Fallback
+
         profile_text = TEXTS[lang]["profile_template"].format(
             full_name=final_data.get("full_name", "Noma'lum"),
             country=final_data.get("country", "Noma'lum"),
             region=final_data.get("region", "Noma'lum"),
             city=final_data.get("city", "Noma'lum"),
             gender=final_data.get("gender", "Noma'lum"),
-            age=final_data.get("age", "Noma'lum"),
-            height=final_data.get("height", "Noma'lum"),
-            weight=final_data.get("weight", "Noma'lum"),
             looking_for_type=final_data.get("looking_for_type", "Noma'lum"),
             partner_gender=final_data.get("partner_gender", "Noma'lum"),
+            partner_age=final_data.get("partner_age", "Noma'lum"),
+            characteristics=final_data.get("characteristics", "Noma'lum"),
             about_me=final_data.get("about_me", "Noma'lum"),
-            contact=final_data.get("contact", "Noma'lum")
+            contact=final_data.get("contact", "Noma'lum"),
+            photo_url=photo_url # Pass photo URL to template
         )
-        await message.answer(profile_text, reply_markup=get_confirm_keyboard(lang))
+        await callback_query.message.edit_text(profile_text, reply_markup=get_confirm_keyboard(lang))
         await state.set_state(Form.confirm)
-    else:
-        await message.answer(TEXTS[lang]["invalid_input"])
+
+    elif consent == "no":
+        await state.clear() # Clear state and restart
+        await callback_query.message.edit_text(TEXTS[lang]["start"], reply_markup=get_language_keyboard())
+    await callback_query.answer()
+
 
 @dp.callback_query(Form.confirm, F.data == "confirm_yes")
 async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
@@ -468,17 +577,23 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
         region=user_data.get("region", "Noma'lum"),
         city=user_data.get("city", "Noma'lum"),
         gender=user_data.get("gender", "Noma'lum"),
-        age=user_data.get("age", "Noma'lum"),
-        height=user_data.get("height", "Noma'lum"),
-        weight=user_data.get("weight", "Noma'lum"),
         looking_for_type=user_data.get("looking_for_type", "Noma'lum"),
         partner_gender=user_data.get("partner_gender", "Noma'lum"),
+        partner_age=user_data.get("partner_age", "Noma'lum"),
+        characteristics=user_data.get("characteristics", "Noma'lum"),
         about_me=user_data.get("about_me", "Noma'lum"),
-        contact=user_data.get("contact", "Noma'lum")
+        contact=user_data.get("contact", "Noma'lum"),
+        photo_url="https://t.me/example" # Placeholder, actual photo sent separately
     )
     
     try:
-        await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML)
+        # Send photo to channel
+        photo_file_id = user_data.get("photo_file_id")
+        if photo_file_id:
+            await bot.send_photo(CHANNEL_ID, photo_file_id, caption=profile_text, parse_mode=ParseMode.HTML)
+        else:
+            await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML)
+            
         await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
     except Exception as e:
         await callback_query.message.edit_text(f"Xato yuz berdi: {e}") # Error handling
@@ -535,7 +650,20 @@ async def handle_invalid_looking_for_input(message: Message, state: FSMContext):
 async def handle_invalid_partner_gender_input(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_partner_gender_keyboard(lang))
+    # Need to pass looking_for_type_key for correct keyboard re-generation
+    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_partner_gender_keyboard(lang, user_data.get("looking_for_type_key")))
+
+@dp.message(StateFilter(Form.partner_age))
+async def handle_invalid_partner_age_input(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    await message.answer(TEXTS[lang]["invalid_age_format"])
+
+@dp.message(StateFilter(Form.characteristics))
+async def handle_invalid_characteristics_input(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    await message.answer(TEXTS[lang]["invalid_characteristics"])
 
 @dp.message(StateFilter(Form.about_me))
 async def handle_invalid_about_me_input(message: Message, state: FSMContext):
