@@ -71,11 +71,11 @@ TEXTS = {
         "custom_city_prompt": "Iltimos, shahringiz nomini kiriting:",
         "looking_for_prompt": "Nima maqsadda tanishmoqchisiz?",
         "partner_gender_prompt": "Kim bilan tanishmoqchisiz (sherikning jinsi)?",
-        "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35):",
+        "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35 yoki 22+):",
         "characteristics_prompt": "O'zingizning yoshingiz, bo'yingiz (sm), og'irligingiz (kg) va boshqa xususiyatlaringizni kiriting (masalan: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi):",
         "about_me_prompt": "O'zingiz haqida ma'lumot kiriting (250 belgidan oshmasin):",
         "contact_type_prompt": "Bog'lanish uchun qanday ma'lumot qoldirishni xohlaysiz?",
-        "phone_number_prompt": "Iltimos, telefon raqamingizni kiriting (masalan, +998XXXXXXXXX):",
+        "phone_number_prompt": "Iltimas, telefon raqamingizni kiriting (masalan, +998XXXXXXXXX):",
         "username_prompt": "Iltimos, Telegram username, Instagram linki yoki boshqa profilingizga havolani kiriting (masalan, @username yoki instagram.com/user):",
         "photo_upload_prompt": "Iltimos, profilingiz uchun rasm yuklang (yuzingiz aniq ko'rinishi shart) yoki 'Yuklamaslik' tugmasini bosing:",
         "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, bizning kanalimizga a'zo bo'ling:",
@@ -110,7 +110,7 @@ TEXTS = {
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
-        "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
+        "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35 yoki 22+).",
         "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
         "invalid_callback_input": "Noto'g'ri tanlov. Iltimos, inline tugma orqali tanlang.",
         "select_from_options": "Iltimos, berilgan variantlardan birini tanlang.",
@@ -147,7 +147,7 @@ TEXTS = {
         "custom_city_prompt": "Пожалуйста, введите название вашего города:",
         "looking_for_prompt": "С какой целью вы хотите познакомиться?",
         "partner_gender_prompt": "С кем вы хотите познакомиться (пол партнера)?",
-        "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35):",
+        "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35 или 22+):",
         "characteristics_prompt": "Введите свой возраст, рост (см), вес (кг) и другие характеристики (например: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен):",
         "about_me_prompt": "Введите информацию о себе (не более 250 символов):",
         "contact_type_prompt": "Какую информацию для связи вы хотите оставить?",
@@ -186,7 +186,7 @@ TEXTS = {
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
-        "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).",
+        "invalid_age_format": "Введите возраст в правильном формате (например, 25-35 или 22+).",
         "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен",
         "invalid_callback_input": "Неверный выбор. Пожалуйста, выберите с помощью встроенной кнопки.",
         "select_from_options": "Пожалуйста, выберите один из предложенных вариантов.",
@@ -451,67 +451,13 @@ def get_confirm_keyboard(lang: str):
 
 def get_admin_review_keyboard(user_id: int, lang: str):
     keyboard = [
+        [InlineKeyboardButton(text=TEXTS[lang]["admin_approve_button"], callback_data=f"admin_approve_{user_id}")],
+        [InlineKeyboardButton(text=TEXTS[lang]["admin_reject_button"], callback_data=f"admin_reject_{user_id}")],
         [InlineKeyboardButton(text=TEXTS[lang]["reply_button_text"], callback_data=f"admin_reply_to_user_{user_id}")]
         # Reply button for admin
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
-# --- Helper Function for Profile Message (Assumed to be in original code) ---
-async def create_profile_message(user_data: dict, user_id: int, username: str, full_name: str, lang: str) -> str:
-    """Creates the formatted profile message for the channel and admin."""
-    gender = user_data.get("gender", "")
-    country = user_data.get("country", "")
-    region = user_data.get("region", "")
-    city = user_data.get("city", "")
-    looking_for_type = user_data.get("looking_for_type", "")
-    partner_gender = user_data.get("partner_gender", "")
-    partner_age = user_data.get("partner_age", "")
-    partner_info = user_data.get("partner_info", "")
-    characteristics = user_data.get("characteristics", "")
-    about_me = user_data.get("about_me", "")
-    contact = user_data.get("contact", "")
-    photo_url = user_data.get("photo_url")
-
-    # Determine photo URL if not provided by user
-    if not photo_url:
-        gender_key = user_data.get("gender_key", "default")
-        photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
-
-    contact_info = ""
-    contact_type = user_data.get("contact_type")
-    if contact_type == "contact_type_number" and user_data.get("phone_number"):
-        contact_info = f"📞 {user_data['phone_number']}"
-    elif contact_type == "contact_type_username" and user_data.get("username"):
-        contact_info = f"@{user_data['username']}"
-    elif contact_type == "contact_type_both":
-        phone_number = user_data.get("phone_number", "")
-        username_val = user_data.get("username", "")
-        if phone_number and username_val:
-            contact_info = f"📞 {phone_number}, @{username_val}"
-        elif phone_number:
-            contact_info = f"📞 {phone_number}"
-        elif username_val:
-            contact_info = f"@{username_val}"
-    else: # Fallback if no contact type is selected but data exists
-        if user_data.get("phone_number"):
-            contact_info = f"📞 {user_data['phone_number']}"
-        elif user_data.get("username"):
-            contact_info = f"@{user_data['username']}"
-
-    profile_text = TEXTS[lang]["profile_template"].format(
-        country=country,
-        region=region,
-        city=city,
-        gender=gender,
-        looking_for_type=looking_for_type,
-        partner_gender=partner_gender,
-        partner_age=partner_age,
-        partner_info=partner_info,
-        characteristics=characteristics,
-        about_me=about_me,
-        contact=contact_info,
-    )
-    return profile_text
 
 # --- Handlers ---
 
@@ -566,7 +512,9 @@ async def back_to_city(callback_query: CallbackQuery, state: FSMContext):
     lang = user_data.get("lang", "uz")
     country_key = user_data.get("country_key", "uz")
     region = user_data.get("region")
-    if not region:  # If user previously entered custom region, go back to custom region input
+    is_custom_region = user_data.get("is_custom_region", False)
+
+    if is_custom_region:  # If user previously entered custom region, go back to custom region input
         await state.set_state(Form.custom_region)
         await callback_query.message.edit_text(TEXTS[lang]["custom_region_prompt"])
     else:
@@ -639,8 +587,7 @@ async def back_to_photo_upload(callback_query: CallbackQuery, state: FSMContext)
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     await state.set_state(Form.photo_upload)
-    await callback_query.message.edit_text(TEXTS[lang]["photo_upload_prompt"],
-                                           reply_markup=get_photo_upload_keyboard(lang))
+    await callback_query.message.edit_text(TEXTS[lang]["photo_upload_prompt"], reply_markup=get_photo_upload_keyboard(lang))
     await callback_query.answer()
 
 
@@ -649,8 +596,7 @@ async def back_to_channel_check(callback_query: CallbackQuery, state: FSMContext
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     await state.set_state(Form.channel_check)
-    await callback_query.message.edit_text(TEXTS[lang]["channel_check_prompt"],
-                                           reply_markup=get_channel_check_keyboard(lang))
+    await callback_query.message.edit_text(TEXTS[lang]["channel_check_prompt"], reply_markup=get_channel_check_keyboard(lang))
     await callback_query.answer()
 
 
@@ -675,7 +621,7 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
     await state.update_data(gender=GENDER_OPTIONS[gender_key][lang], gender_key=gender_key)
 
     await state.set_state(Form.country)
-    await callback_query.message.edit_text(TEXTS[lang]["country_prompt"])
+    await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
     await callback_query.answer()
 
 
@@ -684,7 +630,6 @@ async def process_country(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     country_key = callback_query.data.split("_")[1]
-
     selected_country_text = COUNTRIES.get(country_key, country_key)
 
     await state.update_data(country=selected_country_text, country_key=country_key)
@@ -694,9 +639,7 @@ async def process_country(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(TEXTS[lang]["custom_region_prompt"])
     else:
         await state.set_state(Form.region)
-        await callback_query.message.edit_text(TEXTS[lang]["region_prompt"],
-                                               reply_markup=get_region_keyboard(lang, country_key))
-
+        await callback_query.message.edit_text(TEXTS[lang]["region_prompt"], reply_markup=get_region_keyboard(lang, country_key))
     await callback_query.answer()
 
 
@@ -706,14 +649,14 @@ async def process_region(callback_query: CallbackQuery, state: FSMContext):
     lang = user_data.get("lang", "uz")
     country_key = user_data.get("country_key", "uz")
     region = callback_query.data.split("_")[1]
+
     if region == "other":
         await state.set_state(Form.custom_region)
         await callback_query.message.edit_text(TEXTS[lang]["custom_region_prompt"])
     else:
-        await state.update_data(region=region)
+        await state.update_data(region=region, is_custom_region=False)
         await state.set_state(Form.city)
-        await callback_query.message.edit_text(TEXTS[lang]["city_prompt"],
-                                               reply_markup=get_city_keyboard(lang, country_key, region))
+        await callback_query.message.edit_text(TEXTS[lang]["city_prompt"], reply_markup=get_city_keyboard(lang, country_key, region))
     await callback_query.answer()
 
 
@@ -723,10 +666,9 @@ async def process_custom_region(message: Message, state: FSMContext):
     lang = user_data.get("lang", "uz")
     country_key = user_data.get("country_key", "uz")
     if message.text:
-        await state.update_data(region=message.text)
+        await state.update_data(region=message.text, is_custom_region=True)
         await state.set_state(Form.city)
-        await message.answer(TEXTS[lang]["city_prompt"],
-                             reply_markup=get_city_keyboard(lang, country_key, message.text))
+        await message.answer(TEXTS[lang]["city_prompt"], reply_markup=get_city_keyboard(lang, country_key, message.text))
     else:
         await message.answer(TEXTS[lang]["invalid_input"])
 
@@ -736,14 +678,14 @@ async def process_city(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     city = callback_query.data.split("_")[1]
+
     if city == "other":
         await state.set_state(Form.custom_city)
         await callback_query.message.edit_text(TEXTS[lang]["custom_city_prompt"])
     else:
-        await state.update_data(city=city)
+        await state.update_data(city=city, is_custom_city=False)
         await state.set_state(Form.looking_for_type)
-        await callback_query.message.edit_text(TEXTS[lang]["looking_for_prompt"],
-                                               reply_markup=get_looking_for_keyboard(lang))
+        await callback_query.message.edit_text(TEXTS[lang]["looking_for_prompt"], reply_markup=get_looking_for_keyboard(lang))
     await callback_query.answer()
 
 
@@ -752,7 +694,7 @@ async def process_custom_city(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     if message.text:
-        await state.update_data(city=message.text)
+        await state.update_data(city=message.text, is_custom_city=True)
         await state.set_state(Form.looking_for_type)
         await message.answer(TEXTS[lang]["looking_for_prompt"], reply_markup=get_looking_for_keyboard(lang))
     else:
@@ -768,13 +710,10 @@ async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
     if looking_for_key in LOOKING_FOR_OPTIONS:
         await state.update_data(looking_for_type_key=looking_for_key)
         await state.update_data(looking_for_type=LOOKING_FOR_OPTIONS[looking_for_key][lang])
-
         await state.set_state(Form.partner_gender)
-        await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"],
-                                               reply_markup=get_partner_gender_keyboard(lang, looking_for_key))
+        await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"], reply_markup=get_partner_gender_keyboard(lang, looking_for_key))
     else:
-        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"],
-                                               reply_markup=get_looking_for_keyboard(lang))
+        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"])
     await callback_query.answer()
 
 
@@ -782,24 +721,14 @@ async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
 async def process_partner_gender(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    partner_gender_key = callback_query.data.split("_")[2]
+    partner_gender_key = callback_query.data.removeprefix("partner_gender_")
 
-    looking_for_type_key = user_data.get("looking_for_type_key")
-
-    if looking_for_type_key == "intimate_18":
-        valid_partner_gender_keys = ["male", "female", "family"]
+    if partner_gender_key in PARTNER_GENDER_OPTIONS:
+        await state.update_data(partner_gender=PARTNER_GENDER_OPTIONS[partner_gender_key][lang])
+        await state.set_state(Form.partner_age)
+        await callback_query.message.edit_text(TEXTS[lang]["partner_age_prompt"])
     else:
-        valid_partner_gender_keys = list(PARTNER_GENDER_OPTIONS.keys())
-
-    if partner_gender_key not in valid_partner_gender_keys:
-        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"],
-                                               reply_markup=get_partner_gender_keyboard(lang, looking_for_type_key))
-        await callback_query.answer()
-        return
-
-    await state.update_data(partner_gender=PARTNER_GENDER_OPTIONS[partner_gender_key][lang])
-    await state.set_state(Form.partner_age)
-    await callback_query.message.edit_text(TEXTS[lang]["partner_age_prompt"])
+        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"])
     await callback_query.answer()
 
 
@@ -807,57 +736,65 @@ async def process_partner_gender(callback_query: CallbackQuery, state: FSMContex
 async def process_partner_age(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
+    # Allow formats like "25-35", "25+", or a single number "25"
     if message.text and (len(message.text.split('-')) == 2 and all(p.isdigit() for p in message.text.split('-')) or (
-                message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
+            message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
         await state.update_data(partner_age=message.text)
-        await state.set_state(Form.partner_info) # Keyingi holat: sherik haqida ma'lumot
+        await state.set_state(Form.partner_info)
         await message.answer(TEXTS[lang]["partner_info_prompt"])
     else:
-        await message.answer(TEXTS[lang]["invalid_age_input"])
+        await message.answer(TEXTS[lang]["invalid_age_format"])
+
+
+@dp.message(Form.partner_age)  # Invalid input handler for partner_age
+async def handle_invalid_partner_age_input(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    await message.answer(TEXTS[lang]["invalid_age_format"])
 
 
 @dp.message(StateFilter(Form.partner_info))
 async def process_partner_info(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    if message.text: # Matn bo'lishini tekshirish muhim
+    if message.text:
         await state.update_data(partner_info=message.text)
-        await state.set_state(Form.characteristics) # Sherik ma'lumotidan keyin o'zining xususiyatlari
-        await message.answer(TEXTS[lang]["characteristics_prompt"]) # Yangi prompt matni kerak
+        await state.set_state(Form.characteristics)
+        await message.answer(TEXTS[lang]["characteristics_prompt"])
     else:
-        await message.answer(TEXTS[lang]["invalid_input"]) # Xato xabari
-        
+        await message.answer(TEXTS[lang]["invalid_input"])
+
+
 @dp.message(StateFilter(Form.characteristics))
 async def process_characteristics(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     if message.text:
-        if len(message.text) <= 250:
-            await state.update_data(characteristics=message.text)
-            await state.set_state(Form.about_me) # Xususiyatlardan keyin o'zi haqida ma'lumot
-            await message.answer(TEXTS[lang]["about_me_prompt"])
-        else:
-            await message.answer(TEXTS[lang]["text_too_long"])
+        await state.update_data(characteristics=message.text)
+        await state.set_state(Form.about_me)
+        await message.answer(TEXTS[lang]["about_me_prompt"])
     else:
-        await message.answer(TEXTS[lang]["invalid_characteristics"])
+        await message.answer(TEXTS[lang]["invalid_input"])
 
-@dp.message(StateFilter(Form.about_me)) # about_me endi characteristics dan keyin keladi
+
+@dp.message(StateFilter(Form.about_me))
 async def process_about_me(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    if message.text and len(message.text) <= 250: # Matn uzunligini tekshirishni saqladik
-        await state.update_data(about_me=message.text) # about_me ma'lumotini saqlash
-        await state.set_state(Form.contact_type) # Keyingi holat: aloqa turi (yoki sizning rejangiz bo'yicha yakuniy holat)
+    if message.text and len(message.text) <= 250:
+        await state.update_data(about_me=message.text)
+        await state.set_state(Form.contact_type)
         await message.answer(TEXTS[lang]["contact_type_prompt"], reply_markup=get_contact_type_keyboard(lang))
     else:
-        await message.answer(TEXTS[lang]["text_too_long"]) # Yoki TEXTS[lang]["invalid_input"]
+        await message.answer(TEXTS[lang]["text_too_long"])
+
 
 @dp.callback_query(Form.contact_type, F.data.startswith("contact_type_"))
 async def process_contact_type(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    contact_type = callback_query.data.split("_")[2]
-    await state.update_data(contact_method=contact_type)
+    contact_type = callback_query.data.removeprefix("contact_type_")
+    await state.update_data(contact_type=contact_type)
 
     if contact_type == "number":
         await state.set_state(Form.phone_number)
@@ -875,19 +812,17 @@ async def process_contact_type(callback_query: CallbackQuery, state: FSMContext)
 async def process_phone_number(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    phone_number = message.text
+    contact_type = user_data.get("contact_type")
 
-    if phone_number and phone_number.startswith('+') and phone_number[1:].isdigit() and len(phone_number) > 5:
-        await state.update_data(phone_number=phone_number)
-        contact_method = user_data.get("contact_method")
-
-        if contact_method == "both":
-            await state.set_state(Form.username)
-            await message.answer(TEXTS[lang]["username_prompt"])
-        else:
-            await state.update_data(contact=phone_number)
+    # Basic phone number validation
+    if message.text and message.text.startswith("+") and message.text[1:].isdigit() and len(message.text) >= 10:
+        await state.update_data(phone_number=message.text)
+        if contact_type == "number":
             await state.set_state(Form.photo_upload)
             await message.answer(TEXTS[lang]["photo_upload_prompt"], reply_markup=get_photo_upload_keyboard(lang))
+        elif contact_type == "both":
+            await state.set_state(Form.username)
+            await message.answer(TEXTS[lang]["username_prompt"])
     else:
         await message.answer(TEXTS[lang]["invalid_phone_number"])
 
@@ -896,22 +831,10 @@ async def process_phone_number(message: Message, state: FSMContext):
 async def process_username(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    username = message.text
+    contact_type = user_data.get("contact_type")
 
-    if username:
-        await state.update_data(username=username)
-        contact_method = user_data.get("contact_method")
-
-        final_contact = ""
-        if contact_method == "number":
-            final_contact = user_data.get("phone_number", "Noma'lum")
-        elif contact_method == "username":
-            final_contact = username
-        elif contact_method == "both":
-            phone = user_data.get("phone_number", "")
-            final_contact = f"{phone} / {username}" if phone else username
-
-        await state.update_data(contact=final_contact)
+    if message.text:
+        await state.update_data(username=message.text)
         await state.set_state(Form.photo_upload)
         await message.answer(TEXTS[lang]["photo_upload_prompt"], reply_markup=get_photo_upload_keyboard(lang))
     else:
@@ -922,406 +845,285 @@ async def process_username(message: Message, state: FSMContext):
 async def process_photo_upload(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-
-    photo_file_id = message.photo[-1].file_id
-    await state.update_data(photo_file_id=photo_file_id, photo_skipped=False)
-
-    await state.set_state(Form.channel_check)
-    await message.answer(TEXTS[lang]["channel_check_prompt"], reply_markup=get_channel_check_keyboard(lang))
+    if message.photo:
+        # Get the file_id of the largest photo
+        photo_id = message.photo[-1].file_id
+        await state.update_data(photo_id=photo_id)
+        await state.set_state(Form.channel_check)
+        await message.answer(TEXTS[lang]["channel_check_prompt"], reply_markup=get_channel_check_keyboard(lang))
+    else:
+        await message.answer(TEXTS[lang]["invalid_input"])
 
 
 @dp.callback_query(Form.photo_upload, F.data == "skip_photo_upload")
 async def skip_photo_upload(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    await state.update_data(photo_skipped=True, photo_file_id=None)
+    await state.update_data(photo_id=None)  # No photo provided
     await state.set_state(Form.channel_check)
-    await callback_query.message.edit_text(TEXTS[lang]["channel_check_prompt"],
-                                           reply_markup=get_channel_check_keyboard(lang))
+    await callback_query.message.edit_text(TEXTS[lang]["channel_check_prompt"], reply_markup=get_channel_check_keyboard(lang))
     await callback_query.answer()
 
 
-@dp.message(StateFilter(Form.photo_upload))
-async def handle_invalid_photo_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["photo_upload_prompt"], reply_markup=get_photo_upload_keyboard(lang))
-
-
 @dp.callback_query(Form.channel_check, F.data == "check_channel_member")
-async def check_channel_membership(callback_query: CallbackQuery, state: FSMContext):
+async def check_channel_member(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-
-    user_status = await bot.get_chat_member(CHANNEL_ID, callback_query.from_user.id)
-    if user_status.status in ["member", "administrator", "creator"]:
-        await state.set_state(Form.publish_consent)
-        await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"],
-                                               reply_markup=get_publish_consent_keyboard(lang))
-    else:
-        await callback_query.message.edit_text(TEXTS[lang]["not_a_member"],
-                                               reply_markup=get_channel_check_keyboard(lang))
+    user_id = callback_query.from_user.id
+    try:
+        # Replace YOUR_CHANNEL_USERNAME with your actual channel username
+        chat_member = await bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+        if chat_member.status in ["member", "administrator", "creator"]:
+            await state.set_state(Form.publish_consent)
+            await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"], reply_markup=get_publish_consent_keyboard(lang))
+        else:
+            await callback_query.message.edit_text(TEXTS[lang]["not_a_member"], reply_markup=get_channel_check_keyboard(lang))
+    except Exception as e:
+        print(f"Error checking channel membership: {e}")
+        await callback_query.message.edit_text("An error occurred while checking channel membership. Please try again later.", reply_markup=get_channel_check_keyboard(lang))
     await callback_query.answer()
 
 
 @dp.callback_query(Form.publish_consent, F.data.startswith("consent_"))
-async def request_publish_consent(callback_query: CallbackQuery, state: FSMContext):
+async def process_publish_consent(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    consent = callback_query.data.split("_")[1]
+    consent = callback_query.data.removeprefix("consent_")
 
     if consent == "yes":
         full_name = callback_query.from_user.full_name
         user_telegram_id = callback_query.from_user.id
         username = callback_query.from_user.username
 
-        user_profile_link = f"<a href='t.me/{username}'>@{username}</a>" if username else f"<a href='tg://user?id={user_telegram_id}'>{user_telegram_id}</a>"
+        # Get all collected data
+        user_data_for_confirm = await state.get_data()
 
-        await state.update_data(full_name=full_name, user_telegram_id=user_telegram_id, username=username)
+        # Format contact info
+        contact_info = ""
+        if user_data_for_confirm.get("phone_number") and user_data_for_confirm.get("username"):
+            contact_info = f"📞 {user_data_for_confirm['phone_number']}, @{user_data_for_confirm['username']}"
+        elif user_data_for_confirm.get("phone_number"):
+            contact_info = f"📞 {user_data_for_confirm['phone_number']}"
+        elif user_data_for_confirm.get("username"):
+            contact_info = f"@{user_data_for_confirm['username']}"
 
-        final_data = await state.get_data()
+        # Create user profile link for admin
+        user_profile_link = f"<a href='tg://user?id={user_telegram_id}'>{full_name}</a>"
+        if username:
+            user_profile_link = f"<a href='https://t.me/{username}'>@{username}</a>"
+        elif full_name:
+            user_profile_link = f"<a href='tg://user?id={user_telegram_id}'>{full_name}</a>"
+        else:
+            user_profile_link = f"ID: {user_telegram_id}" # Fallback if no username and no full name (unlikely)
 
-        # Prepare profile text for preview (with profile link)
-        profile_text = TEXTS[lang]["user_profile_template"].format(
-            full_name=final_data.get("full_name", "Noma'lum"),
-            user_profile_link=user_profile_link,  # NEW
-            country=final_data.get("country", "Noma'lum"),
-            region=final_data.get("region", "Noma'lum"),
-            city=final_data.get("city", "Noma'lum"),
-            gender=final_data.get("gender", "Noma'lum"),
-            looking_for_type=final_data.get("looking_for_type", "Noma'lum"),
-            partner_gender=final_data.get("partner_gender", "Noma'lum"),
-            partner_age=final_data.get("partner_age", "Noma'lum"),
-            partner_info=final_data.get("partner_info", "Noma'lum"),
-            characteristics=final_data.get("characteristics", "Noma'lum"),
-            about_me=final_data.get("about_me", "Noma'lum"),
-            contact=final_data.get("contact", "Noma'lum"),
+
+        profile_text_for_admin = TEXTS[lang]["user_profile_template"].format(
+            full_name=full_name,
+            user_profile_link=user_profile_link,
+            country=user_data_for_confirm.get("country", "N/A"),
+            region=user_data_for_confirm.get("region", "N/A"),
+            city=user_data_for_confirm.get("city", "N/A"),
+            gender=user_data_for_confirm.get("gender", "N/A"),
+            looking_for_type=user_data_for_confirm.get("looking_for_type", "N/A"),
+            partner_gender=user_data_for_confirm.get("partner_gender", "N/A"),
+            partner_age=user_data_for_confirm.get("partner_age", "N/A"),
+            partner_info=user_data_for_confirm.get("partner_info", "N/A"),
+            characteristics=user_data_for_confirm.get("characteristics", "N/A"),
+            about_me=user_data_for_confirm.get("about_me", "N/A"),
+            contact=contact_info
         )
-        await callback_query.message.edit_text(profile_text, reply_markup=get_confirm_keyboard(lang))
-        await state.set_state(Form.confirm)
 
-    elif consent == "no":
-        await state.clear()
-        await callback_query.message.edit_text(TEXTS[lang]["start"], reply_markup=get_language_keyboard())
+        photo_id = user_data_for_confirm.get("photo_id")
+        if photo_id:
+            try:
+                # Send photo and then text message to admin
+                await bot.send_photo(chat_id=BOT_ADMIN_ID, photo=photo_id, caption=profile_text_for_admin,
+                                     reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+            except Exception as e:
+                print(f"Error sending photo to admin: {e}")
+                # Fallback to sending text if photo fails
+                await bot.send_message(chat_id=BOT_ADMIN_ID, text=profile_text_for_admin,
+                                       reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+        else:
+            # Send text message to admin if no photo
+            await bot.send_message(chat_id=BOT_ADMIN_ID, text=profile_text_for_admin,
+                                   reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+
+        # Store user's application data for admin review
+        await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value=user_data_for_confirm)
+
+        await state.set_state(Form.confirm) # Stay in confirm state until admin reviews
+        await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
+    else: # consent == "no"
+        await state.clear() # Clear state if user rejects consent
+        await callback_query.message.edit_text("Arizangiz joylanishi rad etildi. Botdan foydalanishni qaytadan boshlashingiz mumkin.", reply_markup=get_language_keyboard())
+
     await callback_query.answer()
 
 
 @dp.callback_query(Form.confirm, F.data == "confirm_yes")
 async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
+    # This handler is largely redundant if admin approval is required before final confirmation to user
+    # Keeping it for potential future direct confirmation flow.
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    user_telegram_id = user_data.get("user_telegram_id")
-    username = user_data.get("username")
-
-    # Generate user profile link for admin's view
-    user_profile_link = f"<a href='t.me/{username}'>@{username}</a>" if username else f"<a href='tg://user?id={user_telegram_id}'>{user_telegram_id}</a>"
-
-    # Construct the final profile message FOR ADMIN (with user profile link and admin review prompt)
-    admin_profile_text = TEXTS[lang]["user_profile_template"].format(
-        full_name=user_data.get("full_name", "Noma'lum"),
-        user_profile_link=user_profile_link,  # NEW
-        country=user_data.get("country", "Noma'lum"),
-        region=user_data.get("region", "Noma'lum"),
-        city=user_data.get("city", "Noma'lum"),
-        gender=user_data.get("gender", "Noma'lum"),
-        looking_for_type=user_data.get("looking_for_type", "Noma'lum"),
-        partner_gender=user_data.get("partner_gender", "Noma'lum"),
-        partner_age=user_data.get("partner_age", "Noma'lum"),
-        partner_info=user_data.get("partner_info", "Noma'lum"),
-        characteristics=user_data.get("characteristics", "Noma'lum"),
-        about_me=user_data.get("about_me", "Noma'lum"),
-        contact=user_data.get("contact", "Noma'lum"),
-    ) + f"\n\n{TEXTS[lang]['admin_review_prompt'].format(user_telegram_id=user_telegram_id)}"
-
-    try:
-        photo_file_id = user_data.get("photo_file_id")
-        photo_skipped = user_data.get("photo_skipped", False)
-        gender_key = user_data.get("gender_key", "default")
-
-        # Admin review keyboard for the admin
-        admin_review_keyboard = get_admin_review_keyboard(user_telegram_id, lang)
-
-        if not photo_skipped and photo_file_id:
-            # Send to admin for review
-            await bot.send_photo(BOT_ADMIN_ID, photo_file_id, caption=admin_profile_text, parse_mode=ParseMode.HTML,
-                                 reply_markup=admin_review_keyboard)
-        else:
-            default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
-            async with aiohttp.ClientSession() as session:
-                async with session.get(default_photo_url) as response:
-                    if response.status == 200:
-                        photo_bytes = await response.read()
-                        # Send to admin for review
-                        await bot.send_photo(BOT_ADMIN_ID,
-                                             types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"),
-                                             caption=admin_profile_text, parse_mode=ParseMode.HTML,
-                                             reply_markup=admin_review_keyboard)
-                    else:
-                        # Fallback to just sending text to admin if default photo fetching fails
-                        await bot.send_message(BOT_ADMIN_ID, admin_profile_text, parse_mode=ParseMode.HTML,
-                                               reply_markup=admin_review_keyboard)
-
-        await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
-        # Store user's complete data in a separate state for admin to access later
-        await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value=user_data)
-
-    except Exception as e:
-        await callback_query.message.edit_text(f"Xato yuz berdi: {e}")
-
-    await state.clear()
+    await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
     await callback_query.answer()
+    # State is cleared only after admin approval
 
 
 @dp.callback_query(Form.confirm, F.data == "confirm_no")
 async def process_confirm_no(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
+    # Go back to start to allow user to re-enter
     await state.clear()
-    await callback_query.message.edit_text(TEXTS[lang]["start"], reply_markup=get_language_keyboard())
+    await callback_query.message.edit_text("Ma'lumotlar bekor qilindi. Qaytadan boshlash uchun /start buyrug'ini bosing.", reply_markup=get_language_keyboard())
     await callback_query.answer()
 
 
-# NEW: Admin Approve/Reject/Reply Functionality
+# ADMIN HANDLERS
 @dp.callback_query(F.data.startswith("admin_approve_"))
 async def admin_approve_application(callback_query: CallbackQuery):
-    if callback_query.from_user.id != BOT_ADMIN_ID:
-        await callback_query.answer("Sizda bu amalni bajarish huquqi yo'q.", show_alert=True)
+    admin_id = callback_query.from_user.id
+    if admin_id != BOT_ADMIN_ID:
+        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
         return
 
-    user_id_to_approve = int(callback_query.data.split("_")[2])
-    application_data = await dp.storage.get_data(bot=bot, user_id=user_id_to_approve, key="application_data")
+    user_telegram_id = int(callback_query.data.split("_")[2])
+    admin_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id)
+    application_data = admin_data.get("application_data")
 
     if not application_data:
-        await callback_query.message.answer("Arizani topib bo'lmadi yoki muddati tugagan.")
-        await callback_query.answer()
+        await callback_query.answer("Bu ariza ma'lumotlari topilmadi.", show_alert=True)
         return
 
     lang = application_data.get("lang", "uz")
 
-    # Construct the final profile message for channel (WITHOUT user profile link and admin prompt)
+    # Format contact info for channel (no user link)
+    contact_info = ""
+    if application_data.get("phone_number") and application_data.get("username"):
+        contact_info = f"📞 {application_data['phone_number']}, @{application_data['username']}"
+    elif application_data.get("phone_number"):
+        contact_info = f"📞 {application_data['phone_number']}"
+    elif application_data.get("username"):
+        contact_info = f"@{application_data['username']}"
+
     profile_text_for_channel = TEXTS[lang]["profile_template"].format(
-        full_name=application_data.get("full_name", "Noma'lum"),  # Full name is used directly from template
-        country=application_data.get("country", "Noma'lum"),
-        region=application_data.get("region", "Noma'lum"),
-        city=application_data.get("city", "Noma'lum"),
-        gender=application_data.get("gender", "Noma'lum"),
-        looking_for_type=application_data.get("looking_for_type", "Noma'lum"),
-        partner_gender=application_data.get("partner_gender", "Noma'lum"),
-        partner_age=application_data.get("partner_age", "Noma'lum"),
-        partner_info=application_data.get("partner_info", "Noma'lum"),
-        characteristics=application_data.get("characteristics", "Noma'lum"),
-        about_me=application_data.get("about_me", "Noma'lum"),
-        contact=application_data.get("contact", "Noma'lum"),
+        country=application_data.get("country", "N/A"),
+        region=application_data.get("region", "N/A"),
+        city=application_data.get("city", "N/A"),
+        gender=application_data.get("gender", "N/A"),
+        looking_for_type=application_data.get("looking_for_type", "N/A"),
+        partner_gender=application_data.get("partner_gender", "N/A"),
+        partner_age=application_data.get("partner_age", "N/A"),
+        partner_info=application_data.get("partner_info", "N/A"),
+        characteristics=application_data.get("characteristics", "N/A"),
+        about_me=application_data.get("about_me", "N/A"),
+        contact=contact_info
     )
 
-    try:
-        photo_file_id = application_data.get("photo_file_id")
-        photo_skipped = application_data.get("photo_skipped", False)
+    photo_id = application_data.get("photo_id")
+    if photo_id:
+        try:
+            await bot.send_photo(chat_id=CHANNEL_ID, photo=photo_id, caption=profile_text_for_channel)
+        except Exception as e:
+            print(f"Error sending photo to channel: {e}")
+            # Fallback to sending text if photo fails
+            await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel)
+    else:
+        # Get a default photo based on gender if no photo is uploaded
         gender_key = application_data.get("gender_key", "default")
-
-        if not photo_skipped and photo_file_id:
-            await bot.send_photo(CHANNEL_ID, photo_file_id, caption=profile_text_for_channel, parse_mode=ParseMode.HTML)
-        else:
-            default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
+        default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
+        try:
+            # Download the image to send it
             async with aiohttp.ClientSession() as session:
-                async with session.get(default_photo_url) as response:
-                    if response.status == 200:
-                        photo_bytes = await response.read()
-                        await bot.send_photo(CHANNEL_ID,
-                                             types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"),
-                                             caption=profile_text_for_channel, parse_mode=ParseMode.HTML)
+                async with session.get(default_photo_url) as resp:
+                    if resp.status == 200:
+                        photo_content = await resp.read()
+                        await bot.send_photo(chat_id=CHANNEL_ID, photo=types.BufferedInputFile(photo_content, filename='photo.jpg'), caption=profile_text_for_channel)
                     else:
-                        await bot.send_message(CHANNEL_ID, profile_text_for_channel, parse_mode=ParseMode.HTML)
+                        print(f"Failed to fetch default photo from {default_photo_url}, status: {resp.status}")
+                        await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
+        except Exception as e:
+            print(f"Error sending default photo or fetching it: {e}")
+            await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
 
-        await bot.send_message(user_id_to_approve, TEXTS[lang]["user_approved"])
-        await callback_query.message.edit_text(
-            f"{TEXTS[lang]['admin_approved_log'].format(user_id=user_id_to_approve)}\n\n" + profile_text_for_channel)
 
-        await dp.storage.set_data(bot=bot, user_id=user_id_to_approve, key="application_data", value=None)
-
+    # Notify user about approval
+    try:
+        await bot.send_message(chat_id=user_telegram_id, text=TEXTS[lang]["user_approved"])
     except Exception as e:
-        await callback_query.message.answer(f"Xato yuz berdi: {e}")
-    await callback_query.answer()
+        print(f"Error sending approval message to user {user_telegram_id}: {e}")
+
+    await callback_query.answer(TEXTS[lang]["admin_approved_log"].format(user_id=user_telegram_id))
+    await callback_query.message.edit_reply_markup(reply_markup=None)  # Remove buttons after action
+    await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value={}) # Clear application data after processing
 
 
 @dp.callback_query(F.data.startswith("admin_reject_"))
 async def admin_reject_application(callback_query: CallbackQuery):
-    if callback_query.from_user.id != BOT_ADMIN_ID:
-        await callback_query.answer("Sizda bu amalni bajarish huquqi yo'q.", show_alert=True)
+    admin_id = callback_query.from_user.id
+    if admin_id != BOT_ADMIN_ID:
+        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
         return
 
-    user_id_to_reject = int(callback_query.data.split("_")[2])
-    application_data = await dp.storage.get_data(bot=bot, user_id=user_id_to_reject, key="application_data")
+    user_telegram_id = int(callback_query.data.split("_")[2])
+    admin_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id)
+    application_data = admin_data.get("application_data")
     lang = application_data.get("lang", "uz") if application_data else "uz"
 
+    # Notify user about rejection
     try:
-        await bot.send_message(user_id_to_reject, TEXTS[lang]["user_rejected"])
-        await callback_query.message.edit_text(TEXTS[lang]["admin_rejected_log"].format(user_id=user_id_to_reject))
-
-        await dp.storage.set_data(bot=bot, user_id=user_id_to_reject, key="application_data", value=None)
-
+        await bot.send_message(chat_id=user_telegram_id, text=TEXTS[lang]["user_rejected"])
     except Exception as e:
-        await callback_query.message.answer(f"Xato yuz berdi: {e}")
-    await callback_query.answer()
+        print(f"Error sending rejection message to user {user_telegram_id}: {e}")
+
+    await callback_query.answer(TEXTS[lang]["admin_rejected_log"].format(user_id=user_telegram_id))
+    await callback_query.message.edit_reply_markup(reply_markup=None)  # Remove buttons after action
+    await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value={}) # Clear application data after processing
 
 
 @dp.callback_query(F.data.startswith("admin_reply_to_user_"))
 async def init_admin_reply(callback_query: CallbackQuery, state: FSMContext):
-    if callback_query.from_user.id != BOT_ADMIN_ID:
-        await callback_query.answer("Sizda bu amalni bajarish huquqi yo'q.", show_alert=True)
+    admin_id = callback_query.from_user.id
+    if admin_id != BOT_ADMIN_ID:
+        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
         return
 
-    user_id_to_reply = int(callback_query.data.split("_")[4])
+    user_telegram_id = int(callback_query.data.split("_")[3])
+    user_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id) # Retrieve user's context
+    lang = user_data.get("lang", "uz")
+
     await state.set_state(Form.admin_reply)
-    await state.update_data(reply_target_user_id=user_id_to_reply)
-
-    admin_state_data = await state.get_data()
-    lang = admin_state_data.get("lang", "uz")
-
+    await state.update_data(target_user_id=user_telegram_id)
     await callback_query.message.answer(TEXTS[lang]["admin_reply_prompt"])
     await callback_query.answer()
 
 
 @dp.message(StateFilter(Form.admin_reply))
 async def send_admin_reply(message: Message, state: FSMContext):
-    if message.from_user.id != BOT_ADMIN_ID:
-        await message.answer("Sizda bu amalni bajarish huquqi yo'q.")
-        return
-
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    target_user_id = user_data.get("reply_target_user_id")
+    target_user_id = user_data.get("target_user_id")
 
     if not target_user_id:
         await message.answer(TEXTS[lang]["admin_reply_error"])
         await state.clear()
         return
 
+    reply_text = message.text
+    if not reply_text:
+        await message.answer(TEXTS[lang]["invalid_input"])
+        return
+
     try:
-        await bot.send_message(target_user_id, message.text)
+        await bot.send_message(chat_id=target_user_id, text=f"Adminstrator javobi:\n\n{reply_text}")
         await message.answer(TEXTS[lang]["admin_reply_sent"])
-    except Exception as e:
-        await message.answer(f"{TEXTS[lang]['admin_reply_error']} {e}")
-    finally:
         await state.clear()
-
-
-# --- Invalid input handlers for specific states (add back buttons to them) ---
-@dp.message(StateFilter(Form.language))
-async def handle_invalid_language_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_language_keyboard())
-
-
-@dp.message(StateFilter(Form.gender))
-async def handle_invalid_gender_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_gender_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.country))
-async def handle_invalid_country_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_country_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.region))
-async def handle_invalid_region_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    country_key = user_data.get("country_key", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_region_keyboard(lang, country_key))
-
-
-@dp.message(StateFilter(Form.city))
-async def handle_invalid_city_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    country_key = user_data.get("country_key", "uz")
-    region = user_data.get("region", "")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_city_keyboard(lang, country_key, region))
-
-
-@dp.message(StateFilter(Form.looking_for_type))
-async def handle_invalid_looking_for_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_looking_for_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.partner_gender))
-async def handle_invalid_partner_gender_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    looking_for_type_key = user_data.get("looking_for_type_key")
-    await message.answer(TEXTS[lang]["select_from_options"],
-                         reply_markup=get_partner_gender_keyboard(lang, looking_for_type_key))
-
-
-@dp.message(StateFilter(Form.partner_age))
-async def handle_invalid_partner_age_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["invalid_age_format"])
-
-
-@dp.message(StateFilter(Form.characteristics))
-async def handle_invalid_characteristics_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["invalid_characteristics"])
-
-
-@dp.message(StateFilter(Form.about_me))
-async def handle_invalid_about_me_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["about_me_prompt"])
-
-
-@dp.message(StateFilter(Form.contact_type))
-async def handle_invalid_contact_type_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_contact_type_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.phone_number))
-async def handle_invalid_phone_number_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["invalid_phone_number"])
-
-
-@dp.message(StateFilter(Form.username))
-async def handle_invalid_username_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["invalid_input"])
-
-
-@dp.message(StateFilter(Form.channel_check))
-async def handle_invalid_channel_check_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_channel_check_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.publish_consent))
-async def handle_invalid_publish_consent_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_publish_consent_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.confirm))
-async def handle_invalid_confirm_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_confirm_keyboard(lang))
+    except Exception as e:
+        print(f"Error sending reply to user {target_user_id}: {e}")
+        await message.answer(TEXTS[lang]["admin_reply_error"])
 
 
 async def main() -> None:
@@ -1358,11 +1160,13 @@ async def main() -> None:
         try:
             await dp.start_polling(bot)
         finally:
-            await dp.storage.close()
             await bot.session.close()
+            await dp.storage.close()
             print("Bot stopped and resources released.")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Bot stopped manually.")
