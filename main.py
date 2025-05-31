@@ -45,8 +45,8 @@ class Form(StatesGroup):
     partner_gender = State()
     partner_age = State()
     partner_info = State()
-    characteristics = State()
     about_me = State()
+    characteristics = State()
     contact_type = State()
     phone_number = State()
     username = State()
@@ -767,8 +767,19 @@ async def process_partner_info(message: Message, state: FSMContext):
     lang = user_data.get("lang", "uz")
     await state.update_data(partner_info=message.text)
 
-    await state.set_state(Form.about_self_detailed)
+    await state.set_state(Form.about_self_detailed) # Bu yerda to'g'ri
     await message.answer(TEXTS[lang]["about_self_detailed_prompt"])
+
+@dp.message(StateFilter(Form.about_self_detailed)) # Yangi handler
+async def process_about_self_detailed(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    if message.text: # Bu yerda ham matn tekshiruvi kerak
+        await state.update_data(about_self_detailed=message.text)
+        await state.set_state(Form.characteristics) # Keyingi holatga o'tish
+        await message.answer(TEXTS[lang]["characteristics_prompt"]) # Keyingi prompt matni
+    else:
+        await message.answer(TEXTS[lang]["invalid_input"]) # Yoki shunga o'xshash xato
 
 @dp.message(StateFilter(Form.characteristics))
 async def process_characteristics(message: Message, state: FSMContext):
@@ -783,20 +794,7 @@ async def process_characteristics(message: Message, state: FSMContext):
             await message.answer(TEXTS[lang]["text_too_long"])
     else:
         await message.answer(TEXTS[lang]["invalid_characteristics"])
-
-
-@dp.message(StateFilter(Form.about_me))
-async def process_about_me(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.text and len(message.text) <= 250:
-        await state.update_data(about_me=message.text)
-        await state.set_state(Form.contact_type)
-        await message.answer(TEXTS[lang]["contact_type_prompt"], reply_markup=get_contact_type_keyboard(lang))
-    else:
-        await message.answer(TEXTS[lang]["text_too_long"])
-
-
+        
 @dp.callback_query(Form.contact_type, F.data.startswith("contact_type_"))
 async def process_contact_type(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
