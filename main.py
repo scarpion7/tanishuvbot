@@ -1,6 +1,7 @@
 import asyncio
 import os
 import random
+from aiohttp import web, ClientSession # <--- BU QATORNI QO'SHING
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart, StateFilter
@@ -22,10 +23,13 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 WEB_SERVER_HOST = "0.0.0.0"
 WEB_SERVER_PORT = int(os.getenv("PORT", 8000))
 
+global_session = ClientSession() # <--- BU QATORNI QO'SHING
+
 # Yangi usulda botni yaratish
 bot = Bot(
     token=BOT_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    session=global_session # <--- BU ARGUMENTNI QO'SHING
 )
 
 # --- FSM (Finite State Machine) states ---
@@ -987,11 +991,27 @@ async def main() -> None:
         await bot.set_webhook(WEBHOOK_URL)
         print("Bot started and listening via webhook...")
 
-        while True:
-            await asyncio.sleep(3600)
+        try: # <--- BU try blokini qo'shing yoki mavjudini o'zgartiring
+            # Botni doimiy ishlashini ta'minlash (agar uzoq vaqt ishlatilsa)
+            while True:
+                await asyncio.sleep(3600) # Misol uchun, 1 soat uxlaydi
+        finally: # <--- BU finally blokini qo'shing
+            # Resurslarni to'g'ri yopish
+            await dp.storage.close()
+            await bot.session.close() # Botning ichki sessiyasini yopish
+            await global_session.close() # <--- GLOBAL SESSYANI YOPISH
+            print("Bot stopped and resources released.")
+
     else:
+        # Polling mode (agar webhook_url yo'q bo'lsa)
         print("Bot started and listening via polling...")
-        await dp.start_polling(bot)
+        try: # <--- try blokini qo'shing
+            await dp.start_polling(bot)
+        finally: # <--- finally blokini qo'shing
+            await dp.storage.close()
+            await bot.session.close() # Botning ichki sessiyasini yopish
+            await global_session.close() # <--- GLOBAL SESSYANI YOPISH
+            print("Bot stopped and resources released.")
 
 if __name__ == "__main__":
     asyncio.run(main())
