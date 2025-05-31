@@ -440,15 +440,6 @@ def get_publish_consent_keyboard(lang: str):
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-def get_confirm_keyboard(lang: str):
-    keyboard = [
-        [InlineKeyboardButton(text="✅ Tasdiqlash", callback_data="confirm_yes")],
-        [InlineKeyboardButton(text=TEXTS[lang]["back_button"], callback_data="confirm_no")]
-        # Use "Back" for "No" or "Edit"
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
-
 def get_admin_review_keyboard(user_id: int, lang: str):
     keyboard = [
         [InlineKeyboardButton(text=TEXTS[lang]["admin_approve_button"], callback_data=f"admin_approve_{user_id}")],
@@ -1018,15 +1009,6 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
     await callback_query.answer()
 
 
-@dp.callback_query(Form.confirm, F.data == "confirm_no")
-async def process_confirm_no(callback_query: CallbackQuery, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await state.clear()
-    await callback_query.message.edit_text(TEXTS[lang]["start"], reply_markup=get_language_keyboard())
-    await callback_query.answer()
-
-
 # NEW: Admin Approve/Reject/Reply Functionality
 @dp.callback_query(F.data.startswith("admin_approve_"))
 async def admin_approve_application(callback_query: CallbackQuery):
@@ -1261,13 +1243,6 @@ async def handle_invalid_publish_consent_input(message: Message, state: FSMConte
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_publish_consent_keyboard(lang))
-
-
-@dp.message(StateFilter(Form.confirm))
-async def handle_invalid_confirm_input(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await message.answer(TEXTS[lang]["select_from_options"], reply_markup=get_confirm_keyboard(lang))
 
 
 async def main() -> None:
