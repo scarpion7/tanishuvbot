@@ -351,7 +351,7 @@ def get_photo_upload_keyboard(lang: str):
 
 def get_channel_check_keyboard(lang: str):
     keyboard = [
-        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/your_channel_username")], # REPLACE with your channel link
+        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/ommaviy_tanishuv_kanali")], # REPLACE with your channel link
         [InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")]
     ]
     keyboard.append([InlineKeyboardButton(text=TEXTS[lang]["back_button"], callback_data="back_to_photo_upload")])
