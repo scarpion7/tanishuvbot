@@ -96,19 +96,7 @@ TEXTS = {
             "<b>📞 Bog'lanish:</b> {contact}\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
-        "user_profile_template": (  # NEW: Template for admin's view with user profile link
-            "<b>🙋‍♂️ Ism:</b> {full_name} ({user_profile_link})\n"
-            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Jinsi:</b> {gender}\n"
-            "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
-            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
-            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
-            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
-            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
-            "<b>✍️ O'zi haqida:</b> {about_me}\n"
-            "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
-        ),
+        
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
         "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35 yoki 22+).",
         "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
@@ -123,17 +111,7 @@ TEXTS = {
         "contact_both": "Ikkalasi ham",
         "invalid_phone_number": "Noto'g'ri telefon raqami formati. Iltimos, +998XXXXXXXXX formatida kiriting.",
         "partner_info_prompt": "Qidirayotgan sherigingiz haqida qisqacha ma'lumot kiriting:",
-        "admin_reply_prompt": "Foydalanuvchiga yuboriladigan javob matnini kiriting:",
-        "admin_reply_sent": "Javob foydalanuvchiga yuborildi.",
-        "admin_reply_error": "Javobni yuborishda xatolik yuz berdi.",
-        "reply_button_text": "Javob yozish",
-        "admin_review_prompt": "Yangi ariza kelib tushdi. Foydalanuvchi ID: {user_telegram_id}",
-        "admin_approve_button": "✅ Tasdiqlash va Kanalga joylash",
-        "admin_reject_button": "❌ Rad etish",
-        "user_approved": "Arizangiz admin tomonidan tasdiqlandi va kanalga joylandi!",
-        "user_rejected": "Arizangiz admin tomonidan rad etildi.",
-        "admin_approved_log": "Admin arizani tasdiqladi va kanalga joyladi. Foydalanuvchi ID: {user_id}",
-        "admin_rejected_log": "Admin arizani rad etdi. Foydalanuvchi ID: {user_id}",
+       
     },
     "ru": {
         "start": "Привет! Выберите ваш язык для использования бота:",
@@ -172,19 +150,7 @@ TEXTS = {
             "<b>📞 Контакт:</b> {contact}\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
-        "user_profile_template": (  # NEW: Template for admin's view with user profile link
-            "<b>🙋‍♂️ Имя:</b> {full_name} ({user_profile_link})\n"
-            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Пол:</b> {gender}\n"
-            "<b>🔍 Цель:</b> {looking_for_type}\n"
-            "<b>👫 Искомый пол:</b> {partner_gender}\n"
-            "<b>🔢 Искомый возраст:</b> {partner_age}\n"
-            "<b>✨ Информация о партнере:</b> {partner_info}\n"
-            "<b>📝 О себе (характеристики):</b> {characteristics}\n"
-            "<b>✍️ О себе:</b> {about_me}\n"
-            "<b>📞 Контакт:</b> {contact}\n"
-            "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
-        ),
+       
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
         "invalid_age_format": "Введите возраст в правильном формате (например, 25-35 или 22+).",
         "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен",
@@ -199,17 +165,7 @@ TEXTS = {
         "contact_both": "И то, и другое",
         "invalid_phone_number": "Неверный формат номера телефона. Пожалуйста, введите в формате +998XXXXXXXXX.",
         "partner_info_prompt": "Введите краткую информацию о партнере, которого вы ищете:",
-        "admin_reply_prompt": "Введите текст ответа, который будет отправлен пользователю:",
-        "admin_reply_sent": "Ответ отправлен пользователю.",
-        "admin_reply_error": "Произошла ошибка при отправке ответа.",
-        "reply_button_text": "Ответить",
-        "admin_review_prompt": "Получена новая заявка. ID пользователя: {user_telegram_id}",
-        "admin_approve_button": "✅ Одобрить и опубликовать в канале",
-        "admin_reject_button": "❌ Отклонить",
-        "user_approved": "Ваша заявка одобрена администратором и опубликована на канале!",
-        "user_rejected": "Ваша заявка отклонена администратором.",
-        "admin_approved_log": "Администратор одобрил заявку и опубликовал ее на канале. ID пользователя: {user_id}",
-        "admin_rejected_log": "Администратор отклонил заявку. ID пользователя: {user_id}",
+        
     }
 }
 
@@ -438,26 +394,6 @@ def get_publish_consent_keyboard(lang: str):
     ]
     keyboard.append([InlineKeyboardButton(text=TEXTS[lang]["back_button"], callback_data="back_to_channel_check")])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
-
-def get_confirm_keyboard(lang: str):
-    keyboard = [
-        [InlineKeyboardButton(text="✅ Tasdiqlash", callback_data="confirm_yes")],
-        [InlineKeyboardButton(text=TEXTS[lang]["back_button"], callback_data="confirm_no")]
-        # Use "Back" for "No" or "Edit"
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
-
-def get_admin_review_keyboard(user_id: int, lang: str):
-    keyboard = [
-        [InlineKeyboardButton(text=TEXTS[lang]["admin_approve_button"], callback_data=f"admin_approve_{user_id}")],
-        [InlineKeyboardButton(text=TEXTS[lang]["admin_reject_button"], callback_data=f"admin_reject_{user_id}")],
-        [InlineKeyboardButton(text=TEXTS[lang]["reply_button_text"], callback_data=f"admin_reply_to_user_{user_id}")]
-        # Reply button for admin
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
 
 # --- Handlers ---
 
@@ -891,32 +827,18 @@ async def process_publish_consent(callback_query: CallbackQuery, state: FSMConte
     consent = callback_query.data.removeprefix("consent_")
 
     if consent == "yes":
-        full_name = callback_query.from_user.full_name
-        user_telegram_id = callback_query.from_user.id
-        username = callback_query.from_user.username
-
         # Get all collected data
-        user_data_for_confirm = await state.get_data()
+        user_data_for_channel = await state.get_data()
 
         # Format contact info
         contact_info = ""
-        if user_data_for_confirm.get("phone_number") and user_data_for_confirm.get("username"):
-            contact_info = f"📞 {user_data_for_confirm['phone_number']}, @{user_data_for_confirm['username']}"
-        elif user_data_for_confirm.get("phone_number"):
-            contact_info = f"📞 {user_data_for_confirm['phone_number']}"
-        elif user_data_for_confirm.get("username"):
-            contact_info = f"@{user_data_for_confirm['username']}"
-
-        # Create user profile link for admin
-        user_profile_link = f"<a href='tg://user?id={user_telegram_id}'>{full_name}</a>"
-        if username:
-            user_profile_link = f"<a href='https://t.me/{username}'>@{username}</a>"
-        elif full_name:
-            user_profile_link = f"<a href='tg://user?id={user_telegram_id}'>{full_name}</a>"
-        else:
-            user_profile_link = f"ID: {user_telegram_id}" # Fallback if no username and no full name (unlikely)
-
-
+        if user_data_for_channel.get("phone_number") and user_data_for_channel.get("username"):
+            contact_info = f"📞 {user_data_for_channel['phone_number']}, @{user_data_for_channel['username']}"
+        elif user_data_for_channel.get("phone_number"):
+            contact_info = f"📞 {user_data_for_channel['phone_number']}"
+        elif user_data_for_channel.get("username"):
+            contact_info = f"@{user_data_for_channel['username']}"
+       
         profile_text_for_admin = TEXTS[lang]["user_profile_template"].format(
             full_name=full_name,
             user_profile_link=user_profile_link,
@@ -933,198 +855,40 @@ async def process_publish_consent(callback_query: CallbackQuery, state: FSMConte
             contact=contact_info
         )
 
-        photo_id = user_data_for_confirm.get("photo_id")
+        photo_id = user_data_for_channel.get("photo_id")
         if photo_id:
             try:
-                # Send photo and then text message to admin
-                await bot.send_photo(chat_id=BOT_ADMIN_ID, photo=photo_id, caption=profile_text_for_admin,
-                                     reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+                await bot.send_photo(chat_id=CHANNEL_ID, photo=photo_id, caption=profile_text_for_channel)
             except Exception as e:
-                print(f"Error sending photo to admin: {e}")
+                print(f"Error sending photo to channel: {e}")
                 # Fallback to sending text if photo fails
-                await bot.send_message(chat_id=BOT_ADMIN_ID, text=profile_text_for_admin,
-                                       reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+                await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel)
         else:
-            # Send text message to admin if no photo
-            await bot.send_message(chat_id=BOT_ADMIN_ID, text=profile_text_for_admin,
-                                   reply_markup=get_admin_review_keyboard(user_telegram_id, lang))
+            # Get a default photo based on gender if no photo is uploaded
+            gender_key = user_data_for_channel.get("gender_key", "default")
+            default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
+            try:
+                # Download the image to send it
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(default_photo_url) as resp:
+                        if resp.status == 200:
+                            photo_content = await resp.read()
+                            await bot.send_photo(chat_id=CHANNEL_ID, photo=types.BufferedInputFile(photo_content, filename='photo.jpg'), caption=profile_text_for_channel)
+                        else:
+                            print(f"Failed to fetch default photo from {default_photo_url}, status: {resp.status}")
+                            await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
+            except Exception as e:
+                print(f"Error sending default photo or fetching it: {e}")
+                await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
 
-        # Store user's application data for admin review
-        await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value=user_data_for_confirm)
-
-        await state.set_state(Form.confirm) # Stay in confirm state until admin reviews
+        await state.clear() # Clear state after successful posting
         await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
+
     else: # consent == "no"
         await state.clear() # Clear state if user rejects consent
         await callback_query.message.edit_text("Arizangiz joylanishi rad etildi. Botdan foydalanishni qaytadan boshlashingiz mumkin.", reply_markup=get_language_keyboard())
 
     await callback_query.answer()
-
-
-@dp.callback_query(Form.confirm, F.data == "confirm_yes")
-async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
-    # This handler is largely redundant if admin approval is required before final confirmation to user
-    # Keeping it for potential future direct confirmation flow.
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
-    await callback_query.answer()
-    # State is cleared only after admin approval
-
-
-@dp.callback_query(Form.confirm, F.data == "confirm_no")
-async def process_confirm_no(callback_query: CallbackQuery, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    # Go back to start to allow user to re-enter
-    await state.clear()
-    await callback_query.message.edit_text("Ma'lumotlar bekor qilindi. Qaytadan boshlash uchun /start buyrug'ini bosing.", reply_markup=get_language_keyboard())
-    await callback_query.answer()
-
-
-# ADMIN HANDLERS
-@dp.callback_query(F.data.startswith("admin_approve_"))
-async def admin_approve_application(callback_query: CallbackQuery):
-    admin_id = callback_query.from_user.id
-    if admin_id != BOT_ADMIN_ID:
-        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
-        return
-
-    user_telegram_id = int(callback_query.data.split("_")[2])
-    admin_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id)
-    application_data = admin_data.get("application_data")
-
-    if not application_data:
-        await callback_query.answer("Bu ariza ma'lumotlari topilmadi.", show_alert=True)
-        return
-
-    lang = application_data.get("lang", "uz")
-
-    # Format contact info for channel (no user link)
-    contact_info = ""
-    if application_data.get("phone_number") and application_data.get("username"):
-        contact_info = f"📞 {application_data['phone_number']}, @{application_data['username']}"
-    elif application_data.get("phone_number"):
-        contact_info = f"📞 {application_data['phone_number']}"
-    elif application_data.get("username"):
-        contact_info = f"@{application_data['username']}"
-
-    profile_text_for_channel = TEXTS[lang]["profile_template"].format(
-        country=application_data.get("country", "N/A"),
-        region=application_data.get("region", "N/A"),
-        city=application_data.get("city", "N/A"),
-        gender=application_data.get("gender", "N/A"),
-        looking_for_type=application_data.get("looking_for_type", "N/A"),
-        partner_gender=application_data.get("partner_gender", "N/A"),
-        partner_age=application_data.get("partner_age", "N/A"),
-        partner_info=application_data.get("partner_info", "N/A"),
-        characteristics=application_data.get("characteristics", "N/A"),
-        about_me=application_data.get("about_me", "N/A"),
-        contact=contact_info
-    )
-
-    photo_id = application_data.get("photo_id")
-    if photo_id:
-        try:
-            await bot.send_photo(chat_id=CHANNEL_ID, photo=photo_id, caption=profile_text_for_channel)
-        except Exception as e:
-            print(f"Error sending photo to channel: {e}")
-            # Fallback to sending text if photo fails
-            await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel)
-    else:
-        # Get a default photo based on gender if no photo is uploaded
-        gender_key = application_data.get("gender_key", "default")
-        default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
-        try:
-            # Download the image to send it
-            async with aiohttp.ClientSession() as session:
-                async with session.get(default_photo_url) as resp:
-                    if resp.status == 200:
-                        photo_content = await resp.read()
-                        await bot.send_photo(chat_id=CHANNEL_ID, photo=types.BufferedInputFile(photo_content, filename='photo.jpg'), caption=profile_text_for_channel)
-                    else:
-                        print(f"Failed to fetch default photo from {default_photo_url}, status: {resp.status}")
-                        await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
-        except Exception as e:
-            print(f"Error sending default photo or fetching it: {e}")
-            await bot.send_message(chat_id=CHANNEL_ID, text=profile_text_for_channel) # Fallback to text only
-
-
-    # Notify user about approval
-    try:
-        await bot.send_message(chat_id=user_telegram_id, text=TEXTS[lang]["user_approved"])
-    except Exception as e:
-        print(f"Error sending approval message to user {user_telegram_id}: {e}")
-
-    await callback_query.answer(TEXTS[lang]["admin_approved_log"].format(user_id=user_telegram_id))
-    await callback_query.message.edit_reply_markup(reply_markup=None)  # Remove buttons after action
-    await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value={}) # Clear application data after processing
-
-
-@dp.callback_query(F.data.startswith("admin_reject_"))
-async def admin_reject_application(callback_query: CallbackQuery):
-    admin_id = callback_query.from_user.id
-    if admin_id != BOT_ADMIN_ID:
-        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
-        return
-
-    user_telegram_id = int(callback_query.data.split("_")[2])
-    admin_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id)
-    application_data = admin_data.get("application_data")
-    lang = application_data.get("lang", "uz") if application_data else "uz"
-
-    # Notify user about rejection
-    try:
-        await bot.send_message(chat_id=user_telegram_id, text=TEXTS[lang]["user_rejected"])
-    except Exception as e:
-        print(f"Error sending rejection message to user {user_telegram_id}: {e}")
-
-    await callback_query.answer(TEXTS[lang]["admin_rejected_log"].format(user_id=user_telegram_id))
-    await callback_query.message.edit_reply_markup(reply_markup=None)  # Remove buttons after action
-    await dp.storage.set_data(bot=bot, user_id=user_telegram_id, key="application_data", value={}) # Clear application data after processing
-
-
-@dp.callback_query(F.data.startswith("admin_reply_to_user_"))
-async def init_admin_reply(callback_query: CallbackQuery, state: FSMContext):
-    admin_id = callback_query.from_user.id
-    if admin_id != BOT_ADMIN_ID:
-        await callback_query.answer("Siz bot administratori emassiz.", show_alert=True)
-        return
-
-    user_telegram_id = int(callback_query.data.split("_")[3])
-    user_data = await dp.storage.get_data(bot=bot, user_id=user_telegram_id) # Retrieve user's context
-    lang = user_data.get("lang", "uz")
-
-    await state.set_state(Form.admin_reply)
-    await state.update_data(target_user_id=user_telegram_id)
-    await callback_query.message.answer(TEXTS[lang]["admin_reply_prompt"])
-    await callback_query.answer()
-
-
-@dp.message(StateFilter(Form.admin_reply))
-async def send_admin_reply(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    target_user_id = user_data.get("target_user_id")
-
-    if not target_user_id:
-        await message.answer(TEXTS[lang]["admin_reply_error"])
-        await state.clear()
-        return
-
-    reply_text = message.text
-    if not reply_text:
-        await message.answer(TEXTS[lang]["invalid_input"])
-        return
-
-    try:
-        await bot.send_message(chat_id=target_user_id, text=f"Adminstrator javobi:\n\n{reply_text}")
-        await message.answer(TEXTS[lang]["admin_reply_sent"])
-        await state.clear()
-    except Exception as e:
-        print(f"Error sending reply to user {target_user_id}: {e}")
-        await message.answer(TEXTS[lang]["admin_reply_error"])
-
 
 async def main() -> None:
     if WEBHOOK_URL:
