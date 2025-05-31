@@ -60,7 +60,7 @@ TEXTS = {
         "start": "Salom! Botdan foydalanish uchun tilingizni tanlang:",
         "choose_language": "Iltimos, tilingizni tanlang:",
         "language_selected": "Til o'zbek tiliga o'rnatildi.",
-        "gender_prompt": "Jinsingizni tanlang:",
+        "gender_prompt": "O'zingizning jinsingizni tanlang:",
         "country_prompt": "Davlatingizni tanlang:",
         "region_prompt": "Viloyatingizni tanlang yoki kiriting:",
         "custom_region_prompt": "Iltimos, viloyatingiz nomini kiriting:",
@@ -92,7 +92,7 @@ TEXTS = {
                 "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
                 "<b>✍️ O'zi haqida:</b> {about_me}\n"
                 "<b>📞 Bog'lanish:</b> {contact}\n"
-                "<a href='https://t.me/@Tungi_lazzat_tanishuv_bot'>Manba: TopTanish</a>" # Photo will be sent as media, not link in caption
+                "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>" # Photo will be sent as media, not link in caption
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
         "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
@@ -149,7 +149,7 @@ TEXTS = {
             "<b>📝 О себе (характеристики):</b> {characteristics}\n"
             "<b>✍️ О себе:</b> {about_me}\n"
             "<b>📞 Контакт:</b> {contact}\n"
-            "<a href='https://t.me/@Tungi_lazzat_tanishuv_bot'>Источник: TopTanish</a>" # Photo will be sent as media, not link in caption
+            "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>" # Photo will be sent as media, not link in caption
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
         "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).",
