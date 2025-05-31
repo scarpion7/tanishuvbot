@@ -81,7 +81,6 @@ TEXTS = {
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi?",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
         "profile_template": (
-            "profile_template": (
                 "<b>🙋‍♂️ Ism:</b> {full_name}\n"
                 "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
                 "<b>🚻 Jinsi:</b> {gender}\n"
