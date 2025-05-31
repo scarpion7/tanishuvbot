@@ -44,6 +44,7 @@ class Form(StatesGroup):
     looking_for_type = State()
     partner_gender = State()
     partner_age = State()
+    partner_info = State()
     characteristics = State()
     about_me = State()
     contact_type = State()
@@ -53,7 +54,6 @@ class Form(StatesGroup):
     channel_check = State()
     publish_consent = State()
     confirm = State()
-    partner_info = State()
     admin_reply = State()
     admin_review = State()
 
@@ -620,19 +620,9 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
 
     await state.update_data(gender=GENDER_OPTIONS[gender_key][lang], gender_key=gender_key)
 
-    await state.set_state(Form.partner_info)
-    await callback_query.message.edit_text(TEXTS[lang]["partner_info_prompt"])
-    await callback_query.answer()
-
-
-@dp.message(StateFilter(Form.partner_info))
-async def process_partner_info(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    await state.update_data(partner_info=message.text)
-
     await state.set_state(Form.country)
-    await message.answer(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
+    await callback_query.message.edit_text(TEXTS[lang]["country_prompt"])
+    await callback_query.answer()
 
 
 @dp.callback_query(Form.country, F.data.startswith("country_"))
@@ -766,11 +756,19 @@ async def process_partner_age(message: Message, state: FSMContext):
     if message.text and (len(message.text.split('-')) == 2 and all(p.isdigit() for p in message.text.split('-')) or (
             message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
         await state.update_data(partner_age=message.text)
-        await state.set_state(Form.characteristics)
-        await message.answer(TEXTS[lang]["characteristics_prompt"])
+        await state.set_state(Form.partner_info)
+        await message.answer(TEXTS[lang]["partner_info_prompt"])
     else:
-        await message.answer(TEXTS[lang]["invalid_age_format"])
+        await message.answer(TEXTS[lang]["invalid_age_input"])
+        
+@dp.message(StateFilter(Form.partner_info))
+async def process_partner_info(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    await state.update_data(partner_info=message.text)
 
+    await state.set_state(Form.about_self_detailed)
+    await message.answer(TEXTS[lang]["about_self_detailed_prompt"])
 
 @dp.message(StateFilter(Form.characteristics))
 async def process_characteristics(message: Message, state: FSMContext):
