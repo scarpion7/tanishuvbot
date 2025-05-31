@@ -594,14 +594,13 @@ async def process_custom_city(message: Message, state: FSMContext):
 async def process_looking_for(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    looking_for_key = callback_query.data.split("_")[1]
+    looking_for_key = callback_query.data.removeprefix("looking_") # TO'G'IRLANGAN QATOR
 
     if looking_for_key in LOOKING_FOR_OPTIONS:
         await state.update_data(looking_for_type_key=looking_for_key)
         await state.update_data(looking_for_type=LOOKING_FOR_OPTIONS[looking_for_key][lang])
         
         await state.set_state(Form.partner_gender)
-        # Pass looking_for_key to dynamically adjust partner gender options
         await callback_query.message.edit_text(TEXTS[lang]["partner_gender_prompt"], reply_markup=get_partner_gender_keyboard(lang, looking_for_key))
     else:
         await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_looking_for_keyboard(lang))
