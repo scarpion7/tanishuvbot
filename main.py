@@ -624,7 +624,6 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(TEXTS[lang]["country_prompt"])
     await callback_query.answer()
 
-
 @dp.callback_query(Form.country, F.data.startswith("country_"))
 async def process_country(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
