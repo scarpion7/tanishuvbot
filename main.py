@@ -1,6 +1,7 @@
 import asyncio
 import os
 import random
+from aiohttp import web
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart, StateFilter
@@ -13,6 +14,7 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 from aiohttp import web
 from urllib.parse import urlparse
 from dotenv import load_dotenv
+import aiohttp # Bu qatorni qo'shing yoki mavjudligini tekshiring!
 
 load_dotenv()
 
@@ -22,12 +24,12 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 WEB_SERVER_HOST = "0.0.0.0"
 WEB_SERVER_PORT = int(os.getenv("PORT", 8000))
 
-# Botni yaratish
+
+# Yangi usulda botni yaratish
 bot = Bot(
     token=BOT_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
-dp = Dispatcher(storage=MemoryStorage())
 
 # --- FSM (Finite State Machine) states ---
 class Form(StatesGroup):
@@ -830,10 +832,10 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
         contact=user_data.get("contact", "Noma'lum"),
     )
     
-   try:
+    try:
         photo_file_id = user_data.get("photo_file_id")
         photo_skipped = user_data.get("photo_skipped", False)
-        gender_key = user_data.get("gender_key", "default")
+        gender_key = user_data.get("gender_key", "default") # Get gender key for default photo
 
         if not photo_skipped and photo_file_id:
             await bot.send_photo(CHANNEL_ID, photo_file_id, caption=profile_text, parse_mode=ParseMode.HTML)
@@ -842,13 +844,14 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
             default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
             # Fetch the photo from URL and send as input_file
             # This requires aiohttp or similar to fetch the image bytes
-            async with bot.session.get(default_photo_url) as response: # <--- Mana shu qator!
-                if response.status == 200:
-                    photo_bytes = await response.read()
-                    await bot.send_photo(CHANNEL_ID, types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"), caption=profile_text, parse_mode=ParseMode.HTML)
-                else:
-                    # Fallback to just sending text if default photo fetching fails
-                    await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML)
+            async with aiohttp.ClientSession() as session: # Xato tuzatilgan qator
+                async with session.get(default_photo_url) as response:
+                    if response.status == 200:
+                        photo_bytes = await response.read()
+                        await bot.send_photo(CHANNEL_ID, types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"), caption=profile_text, parse_mode=ParseMode.HTML)
+                    else:
+                        # Fallback to just sending text if default photo fetching fails
+                        await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML)
             
         await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
     except Exception as e:
@@ -856,6 +859,7 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
     
     await state.clear()
     await callback_query.answer()
+
 @dp.callback_query(Form.confirm, F.data == "confirm_no")
 async def process_confirm_no(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
@@ -988,14 +992,14 @@ async def main() -> None:
 
         try:
             # Serverni cheksiz ishlashini ta'minlash va to'g'ri yopilishiga imkon berish
-            await asyncio.Future() # <--- BU QATORNI QO'SHING VA AVVALGISINI O'CHIRING
+            await asyncio.Future() 
         except asyncio.CancelledError:
-            pass # Yoki maxsus yopilish logikasini qo'shing
+            pass 
         finally:
             # Resurslarni to'g'ri tozalash
-            await runner.cleanup() # <--- aiohttp.web resurslarini tozalash uchun MUHIM
-            await bot.session.close() # Bot sessiyasini yopish
-            await dp.storage.close() # Storage'ni yopish
+            await runner.cleanup() 
+            await bot.session.close() 
+            await dp.storage.close() 
             print("Bot stopped and resources released.")
 
     else:
