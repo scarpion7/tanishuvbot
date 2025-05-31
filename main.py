@@ -88,7 +88,7 @@ TEXTS = {
                 "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
                 "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
                 "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
-                "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"  // Yangi qatorni shu yerga qo'shing
+                "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
                 "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
                 "<b>✍️ O'zi haqida:</b> {about_me}\n"
                 "<b>📞 Bog'lanish:</b> {contact}\n"
