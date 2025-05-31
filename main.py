@@ -621,7 +621,7 @@ async def process_gender(callback_query: CallbackQuery, state: FSMContext):
     await state.update_data(gender=GENDER_OPTIONS[gender_key][lang], gender_key=gender_key)
 
     await state.set_state(Form.country)
-    
+    await callback_query.message.edit_reply_markup(reply_markup=None)
     await callback_query.message.answer(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
     await callback_query.answer()
 
