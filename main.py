@@ -878,7 +878,7 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
 
 
         if not photo_skipped and photo_file_id:
-            await bot.send_photo(CHANNEL_ID, photo_file_id, caption=profile_text, parse_mode=ParseMode.HTML, reply_markup=reply_keyboard_for_admin)
+            await bot.send_photo(CHANNEL_ID, photo_file_id, caption=profile_text, parse_mode=ParseMode.HTML)
         else:
             # Use default photo based on gender_key
             default_photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
@@ -888,10 +888,10 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
                 async with session.get(default_photo_url) as response:
                     if response.status == 200:
                         photo_bytes = await response.read()
-                        await bot.send_photo(CHANNEL_ID, types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"), caption=profile_text, parse_mode=ParseMode.HTML, reply_markup=reply_keyboard_for_admin)
+                        await bot.send_photo(CHANNEL_ID, types.BufferedInputFile(photo_bytes, filename="default_photo.jpg"), caption=profile_text, parse_mode=ParseMode.HTML)
                     else:
                         # Fallback to just sending text if default photo fetching fails
-                        await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML, reply_markup=reply_keyboard_for_admin)
+                        await bot.send_message(CHANNEL_ID, profile_text, parse_mode=ParseMode.HTML)
             
         await callback_query.message.edit_text(TEXTS[lang]["thank_you"])
     except Exception as e:
