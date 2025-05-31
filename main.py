@@ -754,33 +754,25 @@ async def process_partner_age(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     if message.text and (len(message.text.split('-')) == 2 and all(p.isdigit() for p in message.text.split('-')) or (
-            message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
+                message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
         await state.update_data(partner_age=message.text)
-        await state.set_state(Form.partner_info)
+        await state.set_state(Form.partner_info) # Keyingi holat: sherik haqida ma'lumot
         await message.answer(TEXTS[lang]["partner_info_prompt"])
     else:
         await message.answer(TEXTS[lang]["invalid_age_input"])
-        
+
+
 @dp.message(StateFilter(Form.partner_info))
 async def process_partner_info(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    await state.update_data(partner_info=message.text)
-
-    await state.set_state(Form.about_self_detailed) # Bu yerda to'g'ri
-    await message.answer(TEXTS[lang]["about_self_detailed_prompt"])
-
-@dp.message(StateFilter(Form.about_self_detailed)) # Yangi handler
-async def process_about_self_detailed(message: Message, state: FSMContext):
-    user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    if message.text: # Bu yerda ham matn tekshiruvi kerak
-        await state.update_data(about_self_detailed=message.text)
-        await state.set_state(Form.characteristics) # Keyingi holatga o'tish
-        await message.answer(TEXTS[lang]["characteristics_prompt"]) # Keyingi prompt matni
+    if message.text: # Matn bo'lishini tekshirish muhim
+        await state.update_data(partner_info=message.text)
+        await state.set_state(Form.characteristics) # Sherik ma'lumotidan keyin o'zining xususiyatlari
+        await message.answer(TEXTS[lang]["characteristics_prompt"]) # Yangi prompt matni kerak
     else:
-        await message.answer(TEXTS[lang]["invalid_input"]) # Yoki shunga o'xshash xato
-
+        await message.answer(TEXTS[lang]["invalid_input"]) # Xato xabari
+        
 @dp.message(StateFilter(Form.characteristics))
 async def process_characteristics(message: Message, state: FSMContext):
     user_data = await state.get_data()
@@ -788,13 +780,24 @@ async def process_characteristics(message: Message, state: FSMContext):
     if message.text:
         if len(message.text) <= 250:
             await state.update_data(characteristics=message.text)
-            await state.set_state(Form.about_me)
+            await state.set_state(Form.about_me) # Xususiyatlardan keyin o'zi haqida ma'lumot
             await message.answer(TEXTS[lang]["about_me_prompt"])
         else:
             await message.answer(TEXTS[lang]["text_too_long"])
     else:
         await message.answer(TEXTS[lang]["invalid_characteristics"])
-        
+
+@dp.message(StateFilter(Form.about_me)) # about_me endi characteristics dan keyin keladi
+async def process_about_me(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    lang = user_data.get("lang", "uz")
+    if message.text and len(message.text) <= 250: # Matn uzunligini tekshirishni saqladik
+        await state.update_data(about_me=message.text) # about_me ma'lumotini saqlash
+        await state.set_state(Form.contact_type) # Keyingi holat: aloqa turi (yoki sizning rejangiz bo'yicha yakuniy holat)
+        await message.answer(TEXTS[lang]["contact_type_prompt"], reply_markup=get_contact_type_keyboard(lang))
+    else:
+        await message.answer(TEXTS[lang]["text_too_long"]) # Yoki TEXTS[lang]["invalid_input"]
+
 @dp.callback_query(Form.contact_type, F.data.startswith("contact_type_"))
 async def process_contact_type(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
