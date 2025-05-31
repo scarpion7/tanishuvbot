@@ -52,6 +52,7 @@ class Form(StatesGroup):
     channel_check = State()
     publish_consent = State()
     confirm = State()
+    partner_info = State()
 
 TEXTS = {
     "uz": {
@@ -80,16 +81,18 @@ TEXTS = {
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi?",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
         "profile_template": (
-            "<b>🙋‍♂️ Ism:</b> {full_name}\n"
-            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Jinsi:</b> {gender}\n"
-            "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
-            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
-            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
-            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
-            "<b>✍️ O'zi haqida:</b> {about_me}\n"
-            "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<a href='https://t.me/@Tungi_lazzat_tanishuv_bot'>Manba: TopTanish</a>" # Photo will be sent as media, not link in caption
+            "profile_template": (
+                "<b>🙋‍♂️ Ism:</b> {full_name}\n"
+                "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
+                "<b>🚻 Jinsi:</b> {gender}\n"
+                "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
+                "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
+                "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
+                "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"  // Yangi qatorni shu yerga qo'shing
+                "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
+                "<b>✍️ O'zi haqida:</b> {about_me}\n"
+                "<b>📞 Bog'lanish:</b> {contact}\n"
+                "<a href='https://t.me/@Tungi_lazzat_tanishuv_bot'>Manba: TopTanish</a>" # Photo will be sent as media, not link in caption
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
         "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
@@ -507,18 +510,26 @@ async def process_language(callback_query: CallbackQuery, state: FSMContext):
     await callback_query.message.answer(TEXTS[lang]["gender_prompt"], reply_markup=get_gender_keyboard(lang))
     await callback_query.answer()
 
-@dp.callback_query(Form.gender, F.data.startswith("gender_"))
-async def process_gender(callback_query: CallbackQuery, state: FSMContext):
+@dp.message(StateFilter(Form.gender))
+async def process_gender(message: Message, state: FSMContext):
+    await state.update_data(gender=message.text)
+    # Yangi qismga o'tish:
+    await message.answer("Qidirayotgan sherigingiz haqida qisqacha ma'lumot kiriting:")
+    await state.set_state(Form.partner_info)
+    
+@dp.message(StateFilter(Form.partner_info))
+async def process_partner_info(message: Message, state: FSMContext):
+    await state.update_data(partner_info=message.text)
     user_data = await state.get_data()
-    lang = user_data.get("lang", "uz")
-    gender_key = callback_query.data.split("_")[1] # Store gender key for default photo logic
-    if gender_key in GENDER_OPTIONS:
-        await state.update_data(gender=GENDER_OPTIONS[gender_key][lang], gender_key=gender_key)
-        await state.set_state(Form.country)
-        await callback_query.message.edit_text(TEXTS[lang]["country_prompt"], reply_markup=get_country_keyboard(lang))
-    else:
-        await callback_query.message.edit_text(TEXTS[lang]["invalid_callback_input"], reply_markup=get_gender_keyboard(lang))
-    await callback_query.answer()
+
+    # Ma'lumotlarni tekshirish yoki yakunlash
+    response_text = "Ma'lumotlaringiz qabul qilindi:\n"
+    response_text += f"Til: {user_data.get('language')}\n"
+    response_text += f"Jins: {user_data.get('gender')}\n"
+    response_text += f"Sherik haqida ma'lumot: {user_data.get('partner_info')}\n"
+
+    await message.answer(response_text)
+    await state.clear() # FSM holatini tozalash
 
 @dp.callback_query(Form.country, F.data.startswith("country_"))
 async def process_country(callback_query: CallbackQuery, state: FSMContext):
