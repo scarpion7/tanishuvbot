@@ -172,7 +172,7 @@ GENDER_OPTIONS = {
 }
 
 LOOKING_FOR_OPTIONS = {
-    "intimate_18": {"uz": "Intim munosabat 18+", "ru": "Интимные отношения 18+"},
+    "intimate_18": {"uz": "Intim/Seks munosabat 18+", "ru": "Интимные/Секс отношения 18+"},
     "friendship": {"uz": "Do'stlik", "ru": "Дружба"},
     "marriage": {"uz": "Nikoh", "ru": "Брак"},
     "pleasant_chat": {"uz": "Yoqimli suhbat", "ru": "Приятное общение"},
