@@ -24,10 +24,18 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 WEB_SERVER_HOST = "0.0.0.0"
 WEB_SERVER_PORT = int(os.getenv("PORT", 8000))
 BOT_ADMIN_ID = int(os.getenv("BOT_ADMIN_ID"))  # Bot admin ID from .env
+ADMIN_BOT_TOKEN = os.getenv("ADMIN_BOT_TOKEN") # Admin bot token for sending notifications
+ADMIN_ID = int(os.getenv("ADMIN_ID")) # Actual admin user ID
 
 # Yangi usulda botni yaratish
 bot = Bot(
     token=BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+)
+
+# Admin botni yaratish (xabarnomalar uchun)
+admin_bot = Bot(
+    token=ADMIN_BOT_TOKEN,
     default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
 
@@ -54,7 +62,6 @@ class Form(StatesGroup):
     channel_check = State()
     publish_consent = State()
     confirm = State()
-    # Removed admin_reply and admin_review states as per user request
 
 
 TEXTS = {
@@ -109,6 +116,23 @@ TEXTS = {
             "<b>📞 Bog'lanish:</b> {contact}\n"
             "<b>Bot orqali sizga javob yozish:</b> {reply_to_user_link}"
         ),
+        "admin_notification_template": ( # Template for admin notification
+            "<b>Yangi ariza keldi!</b>\n\n"
+            "<b>Foydalanuvchi:</b> <a href='tg://user?id={user_id}'>{full_name}</a>\n"
+            "<b>ID:</b> <code>{user_id}</code>\n"
+            "<b>Username:</b> @{username}\n\n"
+            "<b>Arizachi ma'lumotlari:</b>\n"
+            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
+            "<b>🚻 Jinsi:</b> {gender}\n"
+            "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
+            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
+            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
+            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
+            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
+            "<b>✍️ O'zi haqida:</b> {about_me}\n"
+            "<b>📞 Bog'lanish:</b> {contact}\n\n"
+            "<b>Foydalanuvchiga javob qaytarish:</b> <a href='tg://user?id={user_id}'>Javob berish</a>"
+        ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
         "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
         "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
@@ -123,7 +147,6 @@ TEXTS = {
         "contact_both": "Ikkalasi ham",
         "invalid_phone_number": "Noto'g'ri telefon raqami formati. Iltimos, +998XXXXXXXXX formatida kiriting.",
         "partner_info_prompt": "Qidirayotgan sherigingiz haqida qisqacha ma'lumot kiriting:",
-        # Removed admin related messages
     },
     "ru": {
         "start": "Привет! Выберите ваш язык для использования бота:",
@@ -176,6 +199,23 @@ TEXTS = {
             "<b>📞 Контакт:</b> {contact}\n"
             "<b>Ответить вам через бота:</b> {reply_to_user_link}"
         ),
+        "admin_notification_template": ( # Template for admin notification
+            "<b>Новая заявка!</b>\n\n"
+            "<b>Пользователь:</b> <a href='tg://user?id={user_id}'>{full_name}</a>\n"
+            "<b>ID:</b> <code>{user_id}</code>\n"
+            "<b>Username:</b> @{username}\n\n"
+            "<b>Данные анкеты:</b>\n"
+            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
+            "<b>🚻 Пол:</b> {gender}\n"
+            "<b>🔍 Цель:</b> {looking_for_type}\n"
+            "<b>👫 Искомый пол:</b> {partner_gender}\n"
+            "<b>🔢 Искомый возраст:</b> {partner_age}\n"
+            "<b>✨ Информация о партнере:</b> {partner_info}\n"
+            "<b>📝 О себе (характеристики):</b> {characteristics}\n"
+            "<b>✍️ О себе:</b> {about_me}\n"
+            "<b>📞 Контакт:</b> {contact}\n\n"
+            "<b>Ответить пользователю:</b> <a href='tg://user?id={user_id}'>Ответить</a>"
+        ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
         "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).",
         "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен",
@@ -190,7 +230,6 @@ TEXTS = {
         "contact_both": "И то, и другое",
         "invalid_phone_number": "Неверный формат номера телефона. Пожалуйста, введите в формате +998XXXXXXXXX.",
         "partner_info_prompt": "Введите краткую информацию о партнере, которого вы ищете:",
-        # Removed admin related messages
     }
 }
 
@@ -428,9 +467,6 @@ def get_confirm_keyboard(lang: str):
         # Use "Back" for "No" or "Edit"
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
-
-# Removed get_admin_review_keyboard as per user request
 
 
 # --- Handlers ---
@@ -882,10 +918,10 @@ async def process_publish_consent(callback_query: CallbackQuery, state: FSMConte
         if collected_data.get("contact_type") == "number":
             contact_info = f"📞 {phone_number}"
         elif collected_data.get("contact_type") == "username":
-            contact_info = f"@{username}" if username.startswith('@') else f"<a href='{username}'>{username}</a>"
+            contact_info = f"@{username}" if username and username.startswith('@') else (f"<a href='{username}'>{username}</a>" if username else "")
         elif collected_data.get("contact_type") == "both":
             contact_info = f"📞 {phone_number}\n"
-            contact_info += f"@{username}" if username.startswith('@') else f"<a href='{username}'>{username}</a>"
+            contact_info += f"@{username}" if username and username.startswith('@') else (f"<a href='{username}'>{username}</a>" if username else "")
 
         profile_text = TEXTS[lang]["profile_template"].format(
             country=country_text,
@@ -942,8 +978,52 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
                 await bot.send_photo(CHANNEL_ID, photo=photo_url, caption=profile_text_for_channel)
             print(f"User {callback_query.from_user.id} application published to channel {CHANNEL_ID}")
 
-            # Prepare message for user with full details, profile link, and reply function
+            # Prepare message for admin notification
             user_full_name = callback_query.from_user.full_name
+            user_id = callback_query.from_user.id
+            user_username = callback_query.from_user.username if callback_query.from_user.username else "N/A"
+
+            contact_info_admin = ""
+            if collected_data.get("contact_type") == "number":
+                contact_info_admin = f"📞 {collected_data.get('phone_number')}"
+            elif collected_data.get("contact_type") == "username":
+                username_val = collected_data.get("username")
+                contact_info_admin = f"@{username_val}" if username_val and username_val.startswith('@') else (f"<a href='{username_val}'>{username_val}</a>" if username_val else "")
+            elif collected_data.get("contact_type") == "both":
+                contact_info_admin = f"📞 {collected_data.get('phone_number')}\n"
+                username_val = collected_data.get("username")
+                contact_info_admin += f"@{username_val}" if username_val and username_val.startswith('@') else (f"<a href='{username_val}'>{username_val}</a>" if username_val else "")
+
+            admin_notification_text = TEXTS[lang]["admin_notification_template"].format(
+                user_id=user_id,
+                full_name=user_full_name,
+                username=user_username,
+                country=collected_data.get("country", ""),
+                region=collected_data.get("region", ""),
+                city=collected_data.get("city", ""),
+                gender=collected_data.get("gender", ""),
+                looking_for_type=collected_data.get("looking_for_type", ""),
+                partner_gender=collected_data.get("partner_gender", ""),
+                partner_age=collected_data.get("partner_age", ""),
+                partner_info=collected_data.get("partner_info", ""),
+                characteristics=collected_data.get("characteristics", ""),
+                about_me=collected_data.get("about_me", ""),
+                contact=contact_info_admin
+            )
+
+            # Send notification to admin using admin_bot
+            try:
+                if photo_id:
+                    await admin_bot.send_photo(ADMIN_ID, photo=photo_id, caption=admin_notification_text)
+                else:
+                    # If no photo uploaded by user, use default photo for admin notification based on gender
+                    photo_url_admin = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
+                    await admin_bot.send_photo(ADMIN_ID, photo=photo_url_admin, caption=admin_notification_text)
+                print(f"Application notification sent to admin {ADMIN_ID} by admin_bot.")
+            except Exception as e:
+                print(f"Error sending admin notification: {e}")
+
+            # Prepare message for user with full details, profile link, and reply function
             user_profile_link = ""
             if callback_query.from_user.url:
                 user_profile_link = callback_query.from_user.url
@@ -953,16 +1033,17 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
             # Create a reply link for the user
             reply_to_user_link = f"tg://user?id={callback_query.from_user.id}"
 
-            contact_info = ""
+            contact_info_user = ""
             if collected_data.get("contact_type") == "number":
-                contact_info = f"📞 {collected_data.get('phone_number')}"
+                contact_info_user = f"📞 {collected_data.get('phone_number')}"
             elif collected_data.get("contact_type") == "username":
-                username = collected_data.get("username")
-                contact_info = f"@{username}" if username.startswith('@') else f"<a href='{username}'>{username}</a>"
+                username_val = collected_data.get("username")
+                contact_info_user = f"@{username_val}" if username_val and username_val.startswith('@') else (f"<a href='{username_val}'>{username_val}</a>" if username_val else "")
             elif collected_data.get("contact_type") == "both":
-                contact_info = f"📞 {collected_data.get('phone_number')}\n"
-                username = collected_data.get("username")
-                contact_info += f"@{username}" if username.startswith('@') else f"<a href='{username}'>{username}</a>"
+                contact_info_user = f"📞 {collected_data.get('phone_number')}\n"
+                username_val = collected_data.get("username")
+                contact_info_user += f"@{username_val}" if username_val and username_val.startswith('@') else (f"<a href='{username_val}'>{username_val}</a>" if username_val else "")
+
 
             user_confirmation_text = TEXTS[lang]["user_profile_template"].format(
                 full_name=user_full_name,
@@ -977,7 +1058,7 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
                 partner_info=collected_data.get("partner_info", ""),
                 characteristics=collected_data.get("characteristics", ""),
                 about_me=collected_data.get("about_me", ""),
-                contact=contact_info,
+                contact=contact_info_user,
                 reply_to_user_link=reply_to_user_link # This will create a clickable link to reply to the user
             )
 
@@ -1003,9 +1084,6 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"],
                                                reply_markup=get_publish_consent_keyboard(lang))
     await callback_query.answer()
-
-
-# Removed all admin related handlers as per user request (admin_approve, admin_reject, admin_reply)
 
 
 async def main() -> None:
@@ -1034,6 +1112,7 @@ async def main() -> None:
         finally:
             await runner.cleanup()
             await bot.session.close()
+            await admin_bot.session.close() # Close admin_bot session
             await dp.storage.close()
             print("Bot stopped and resources released.")
 
@@ -1045,6 +1124,7 @@ async def main() -> None:
             pass
         finally:
             await bot.session.close()
+            await admin_bot.session.close() # Close admin_bot session
             await dp.storage.close()
             print("Bot stopped and resources released.")
 
