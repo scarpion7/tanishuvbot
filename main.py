@@ -73,7 +73,7 @@ TEXTS = {
         "partner_gender_prompt": "Kim bilan tanishmoqchisiz (sherikning jinsi)?",
         "partner_age_prompt": "Qidirayotgan sherigingizning yoshini kiriting (masalan, 25-35):",
         "characteristics_prompt": "O'zingizning yoshingiz, bo'yingiz (sm), og'irligingiz (kg) va boshqa xususiyatlaringizni kiriting (masalan: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi):",
-        "about_me_prompt": "O'zingiz haqida ma'lumot kiriting (250 belgidan oshmasin):",
+        "about_me_prompt": "O'zingiz haqida ma'lumot kiriting:",
         "contact_type_prompt": "Bog'lanish uchun qanday ma'lumot qoldirishni xohlaysiz?",
         "phone_number_prompt": "Iltimos, telefon raqamingizni kiriting (masalan, +998XXXXXXXXX):",
         "username_prompt": "Iltimos, Telegram username, Instagram linki yoki boshqa profilingizga havolani kiriting (masalan, @username yoki instagram.com/user):",
@@ -85,28 +85,28 @@ TEXTS = {
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi?",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
         "profile_template": (
-            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Jinsi:</b> {gender}\n"
-            "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
-            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
-            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
-            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
-            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
-            "<b>✍️ O'zi haqida:</b> {about_me}\n"
-            "<b>📞 Bog'lanish:</b> {contact}\n"
+            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n\n"
+            "<b>🚻 Jinsi:</b> {gender}\n\n"
+            "<b>🔍 Maqsadi:</b> {looking_for_type}\n\n"
+            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n\n"
+            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n\n"
+            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n\n"
+            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n\n"
+            "<b>✍️ O'zi haqida:</b> {about_me}\n\n"
+            "<b>📞 Bog'lanish:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
         "user_profile_template": (  # NEW: Template for admin's view with user profile link
-            "<b>🙋‍♂️ Ism:</b> {full_name} ({user_profile_link})\n"
-            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Jinsi:</b> {gender}\n"
-            "<b>🔍 Maqsadi:</b> {looking_for_type}\n"
-            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n"
-            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n"
-            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
-            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
-            "<b>✍️ O'zi haqida:</b> {about_me}\n"
-            "<b>📞 Bog'lanish:</b> {contact}\n"
+            "<b>🙋‍♂️ Ism:</b> {full_name} ({user_profile_link})\n\n"
+            "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n\n"
+            "<b>🚻 Jinsi:</b> {gender}\n\n"
+            "<b>🔍 Maqsadi:</b> {looking_for_type}\n\n"
+            "<b>👫 Qidirayotgan jinsi:</b> {partner_gender}\n\n"
+            "<b>🔢 Qidirayotgan yoshi:</b> {partner_age}\n\n"
+            "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n\n"
+            "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n\n"
+            "<b>✍️ O'zi haqida:</b> {about_me}\n\n"
+            "<b>📞 Bog'lanish:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
@@ -114,7 +114,7 @@ TEXTS = {
         "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
         "invalid_callback_input": "Noto'g'ri tanlov. Iltimos, inline tugma orqali tanlang.",
         "select_from_options": "Iltimos, berilgan variantlardan birini tanlang.",
-        "text_too_long": "Matn juda uzun. Iltimos, 250 belgidan oshirmang.",
+        "text_too_long": "Matn juda uzun..",
         "other": "Boshqa",
         "back_button": "🔙 Orqaga",
         "skip_photo": "Yuklamaslik",
@@ -149,7 +149,7 @@ TEXTS = {
         "partner_gender_prompt": "С кем вы хотите познакомиться (пол партнера)?",
         "partner_age_prompt": "Введите возраст партнера, которого вы ищете (например, 25-35):",
         "characteristics_prompt": "Введите свой возраст, рост (см), вес (кг) и другие характеристики (например: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен):",
-        "about_me_prompt": "Введите информацию о себе (не более 250 символов):",
+        "about_me_prompt": "Введите информацию о себе:",
         "contact_type_prompt": "Какую информацию для связи вы хотите оставить?",
         "phone_number_prompt": "Пожалуйста, введите ваш номер телефона (например, +998XXXXXXXXX):",
         "username_prompt": "Пожалуйста, введите имя пользователя Telegram, ссылку на Instagram или другую ссылку на ваш профиль (например, @username или instagram.com/user):",
@@ -161,28 +161,28 @@ TEXTS = {
         "confirm_prompt": "Ваши данные верны?",
         "thank_you": "Ваша заявка принята. Скоро она будет размещена на канале.",
         "profile_template": (
-            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Пол:</b> {gender}\n"
-            "<b>🔍 Цель:</b> {looking_for_type}\n"
-            "<b>👫 Искомый пол:</b> {partner_gender}\n"
-            "<b>🔢 Искомый возраст:</b> {partner_age}\n"
-            "<b>✨ Информация о партнере:</b> {partner_info}\n"
-            "<b>📝 О себе (характеристики):</b> {characteristics}\n"
-            "<b>✍️ О себе:</b> {about_me}\n"
-            "<b>📞 Контакт:</b> {contact}\n"
+            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n\n"
+            "<b>🚻 Пол:</b> {gender}\n\n"
+            "<b>🔍 Цель:</b> {looking_for_type}\n\n"
+            "<b>👫 Искомый пол:</b> {partner_gender}\n\n"
+            "<b>🔢 Искомый возраст:</b> {partner_age}\n\n"
+            "<b>✨ Информация о партнере:</b> {partner_info}\n\n"
+            "<b>📝 О себе (характеристики):</b> {characteristics}\n\n"
+            "<b>✍️ О себе:</b> {about_me}\n\n"
+            "<b>📞 Контакт:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
         "user_profile_template": (  # NEW: Template for admin's view with user profile link
-            "<b>🙋‍♂️ Имя:</b> {full_name} ({user_profile_link})\n"
-            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
-            "<b>🚻 Пол:</b> {gender}\n"
-            "<b>🔍 Цель:</b> {looking_for_type}\n"
-            "<b>👫 Искомый пол:</b> {partner_gender}\n"
-            "<b>🔢 Искомый возраст:</b> {partner_age}\n"
-            "<b>✨ Информация о партнере:</b> {partner_info}\n"
-            "<b>📝 О себе (характеристики):</b> {characteristics}\n"
-            "<b>✍️ О себе:</b> {about_me}\n"
-            "<b>📞 Контакт:</b> {contact}\n"
+            "<b>🙋‍♂️ Имя:</b> {full_name} ({user_profile_link})\n\n"
+            "<b>📍 Местоположение:</b> {country}, {region}, {city}\n\n"
+            "<b>🚻 Пол:</b> {gender}\n\n"
+            "<b>🔍 Цель:</b> {looking_for_type}\n\n"
+            "<b>👫 Искомый пол:</b> {partner_gender}\n\n"
+            "<b>🔢 Искомый возраст:</b> {partner_age}\n\n"
+            "<b>✨ Информация о партнере:</b> {partner_info}\n\n"
+            "<b>📝 О себе (характеристики):</b> {characteristics}\n\n"
+            "<b>✍️ О себе:</b> {about_me}\n\n"
+            "<b>📞 Контакт:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
@@ -190,7 +190,7 @@ TEXTS = {
         "invalid_characteristics": "Пожалуйста, введите ваши характеристики в правильном формате. Пример: Возраст: 25, Рост: 170см, Вес: 65кг, Спортсмен",
         "invalid_callback_input": "Неверный выбор. Пожалуйста, выберите с помощью встроенной кнопки.",
         "select_from_options": "Пожалуйста, выберите один из предложенных вариантов.",
-        "text_too_long": "Текст слишком длинный. Пожалуйста, не превышайте 250 символов.",
+        "text_too_long": "Текст слишком длинный",
         "other": "Другое",
         "back_button": "🔙 Назад",
         "skip_photo": "Не загружать",
@@ -423,7 +423,7 @@ def get_photo_upload_keyboard(lang: str):
 
 def get_channel_check_keyboard(lang: str):
     keyboard = [
-        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/ommaviy_tanishuv_kanali")],
+        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/ommaviy_tanishuv_kanali",url=f"https://t.me/oila_mjm_vodiy_12_viloyat_jmj")],
         # REPLACE with your channel link
         [InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")]
     ]
@@ -790,7 +790,7 @@ async def process_characteristics(message: Message, state: FSMContext):
 async def process_about_me(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    if message.text and len(message.text) <= 250: # Matn uzunligini tekshirishni saqladik
+    if message.text and len(message.text) <= 450: # Matn uzunligini tekshirishni saqladik
         await state.update_data(about_me=message.text) # about_me ma'lumotini saqlash
         await state.set_state(Form.contact_type) # Keyingi holat: aloqa turi (yoki sizning rejangiz bo'yicha yakuniy holat)
         await message.answer(TEXTS[lang]["contact_type_prompt"], reply_markup=get_contact_type_keyboard(lang))
