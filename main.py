@@ -138,7 +138,7 @@ TEXTS = {
         "admin_rejected_log": "Admin arizani rad etdi. Foydalanuvchi ID: {user_id}",
         # Yangi: Kanallar ro'yxati
         "channel_links": [
-            {"name": "TopTanish Kanali", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1001234567890}, # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name": "Tanishuv olami kanali", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1001234567890}, # <--- O'zingizning kanal ID'ingizni kiriting
             {"name": "Oila MJM Vodiy", "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1009876543210}, # <--- O'zingizning kanal ID'ingizni kiriting
             {"name": "Oila Ayollar MJM", "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1001122334455} # <--- O'zingizning kanal ID'ingizni kiriting
         ],
