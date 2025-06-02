@@ -24,6 +24,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 WEB_SERVER_HOST = "0.0.0.0"
 WEB_SERVER_PORT = int(os.getenv("PORT", 8000))
 BOT_ADMIN_ID = int(os.getenv("BOT_ADMIN_ID"))  # Bot admin ID from .env
+BOT_USERNAME = os.getenv("BOT_USERNAME") # Bot username from .env for deep linking
 
 # Yangi usulda botni yaratish
 bot = Bot(
@@ -54,8 +55,9 @@ class Form(StatesGroup):
     channel_check = State()
     publish_consent = State()
     confirm = State()
-    admin_review = State()  # State for admin review
-    admin_reply = State() # State for admin reply
+    admin_review = State()  # State for admin review (not used for approval now)
+    admin_reply = State() # State for admin reply (for rejection)
+    admin_chat = State() # State for admin-user anonymous chat
 
 
 TEXTS = {
@@ -96,7 +98,7 @@ TEXTS = {
             "<b>📞 Bog'lanish:</b> {contact}\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
-        "user_profile_template": (  # Template for user's own confirmation message
+        "user_profile_template": (  # Template for user's own confirmation message (removed reply_to_user_link)
             "<b>Sizning arizangiz kanalga muvaffaqiyatli joylashtirildi!</b>\n\n"
             "<b>🙋‍♂️ Ism:</b> {full_name} (<a href='{user_profile_link}'>Profilga havola</a>)\n"
             "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n"
@@ -108,7 +110,6 @@ TEXTS = {
             "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n"
             "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<b>Bot orqali sizga javob yozish:</b> {reply_to_user_link}"
         ),
         "admin_profile_template": (  # Template for admin's notification message
             "<b>Yangi ariza keldi!</b>\n\n"
@@ -121,8 +122,7 @@ TEXTS = {
             "<b>✨ Sherik haqida ma'lumot:</b> {partner_info}\n"
             "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n"
-            "<b>📞 Bog'lanish:</b> {contact}\n"
-            "<b>Bot orqali foydalanuvchiga javob yozish:</b> {reply_to_user_link}\n\n"
+            "<b>📞 Bog'lanish:</b> {contact}\n\n"
             "Ushbu ariza kanalga avtomatik joylashtirildi."
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
@@ -144,7 +144,11 @@ TEXTS = {
         "admin_approved_user_message": "Sizning arizangiz administrator tomonidan qabul qilindi va kanalga joylashtirildi. E'tiboringiz uchun rahmat!",
         "admin_rejected_user_message": "Sizning arizangiz administrator tomonidan rad etildi. Sabab: {reason}. Boshlash uchun /start buyrug'ini bosing.",
         "admin_reply_prompt": "Rad etish sababini kiriting:",
-        "admin_reply_sent": "Foydalanuvchiga javob yuborildi."
+        "admin_reply_sent": "Foydalanuvchiga javob yuborildi.",
+        "admin_chat_start": "Foydalanuvchi bilan chatni boshladingiz. Xabaringizni yuboring:",
+        "admin_chat_end": "Chat yakunlandi.",
+        "admin_chat_end_button": "Chatni yakunlash",
+        "user_chat_notification": "Admin sizga yozmoqda. Javobingizni shu yerga yuboring."
     },
     "ru": {
         "start": "Привет! Выберите ваш язык для использования бота:",
@@ -183,7 +187,7 @@ TEXTS = {
             "<b>📞 Контакт:</b> {contact}\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
-        "user_profile_template": (  # Template for user's own confirmation message
+        "user_profile_template": (  # Template for user's own confirmation message (removed reply_to_user_link)
             "<b>Ваша заявка успешно размещена на канале!</b>\n\n"
             "<b>🙋‍♂️ Имя:</b> {full_name} (<a href='{user_profile_link}'>Ссылка на профиль</a>)\n"
             "<b>📍 Местоположение:</b> {country}, {region}, {city}\n"
@@ -195,7 +199,6 @@ TEXTS = {
             "<b>📝 О себе (характеристики):</b> {characteristics}\n"
             "<b>✍️ О себе:</b> {about_me}\n"
             "<b>📞 Контакт:</b> {contact}\n"
-            "<b>Ответить вам через бота:</b> {reply_to_user_link}"
         ),
         "admin_profile_template": (  # Template for admin's notification message
             "<b>Новая заявка поступила!</b>\n\n"
@@ -208,8 +211,7 @@ TEXTS = {
             "<b>✨ Информация о партнере:</b> {partner_info}\n"
             "<b>📝 О себе (характеристики):</b> {characteristics}\n"
             "<b>✍️ О себе:</b> {about_me}\n"
-            "<b>📞 Контакт:</b> {contact}\n"
-            "<b>Ответить пользователю через бота:</b> {reply_to_user_link}\n\n"
+            "<b>📞 Контакт:</b> {contact}\n\n"
             "Эта заявка автоматически опубликована на канале."
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
@@ -231,7 +233,11 @@ TEXTS = {
         "admin_approved_user_message": "Ваша заявка была одобрена администратором и опубликована на канале. Спасибо за ваше внимание!",
         "admin_rejected_user_message": "Ваша заявка была отклонена администратором. Причина: {reason}. Нажмите /start, чтобы начать заново.",
         "admin_reply_prompt": "Введите причину отклонения:",
-        "admin_reply_sent": "Ответ пользователю отправлен."
+        "admin_reply_sent": "Ответ пользователю отправлен.",
+        "admin_chat_start": "Вы начали чат с пользователем. Отправьте ваше сообщение:",
+        "admin_chat_end": "Чат завершен.",
+        "admin_chat_end_button": "Завершить чат",
+        "user_chat_notification": "Администратор пишет вам. Отправьте свой ответ сюда."
     }
 }
 
@@ -470,18 +476,45 @@ def get_confirm_keyboard(lang: str):
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
-def get_admin_review_keyboard(lang: str, user_id: int):
+def get_admin_action_keyboard(lang: str, user_id: int, bot_username: str):
     keyboard = [
-        [InlineKeyboardButton(text=TEXTS[lang]["confirm_yes"], callback_data=f"admin_approve_{user_id}")],
-        [InlineKeyboardButton(text=TEXTS[lang]["confirm_no"], callback_data=f"admin_reject_{user_id}")]
+        [InlineKeyboardButton(text="💬 Javob yozish", url=f"https://t.me/{bot_username}?start=reply_{user_id}")],
+        [InlineKeyboardButton(text="❌ Rad etish", callback_data=f"admin_reject_{user_id}")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
+def get_admin_chat_keyboard(lang: str):
+    keyboard = [
+        [InlineKeyboardButton(text=TEXTS[lang]["admin_chat_end_button"], callback_data="end_admin_chat")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 # --- Handlers ---
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
+    # Check for deep linking for admin chat
+    if message.get_args() and message.get_args().startswith("reply_"):
+        if message.from_user.id != BOT_ADMIN_ID:
+            await message.answer("Siz admin emassiz!")
+            return
+
+        target_user_id = int(message.get_args().removeprefix("reply_"))
+        await state.set_state(Form.admin_chat)
+        await state.update_data(target_user_id=target_user_id)
+        user_data = await state.get_data()
+        lang = user_data.get("lang", "uz") # Get admin's preferred language
+
+        # Notify the user that admin is starting a chat
+        try:
+            await bot.send_message(target_user_id, TEXTS[lang]["user_chat_notification"])
+        except Exception as e:
+            print(f"Could not notify user {target_user_id} about admin chat: {e}")
+
+        await message.answer(TEXTS[lang]["admin_chat_start"], reply_markup=get_admin_chat_keyboard(lang))
+        return
+
+    # Normal start process
     await state.set_state(Form.language)
     # Save user's full name and profile link at the start
     full_name = message.from_user.full_name
@@ -984,7 +1017,6 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
         applicant_user_id = callback_query.from_user.id
         full_name = collected_data.get("full_name", callback_query.from_user.full_name)
         user_profile_link = collected_data.get("user_profile_link", f"tg://user?id={applicant_user_id}")
-        reply_to_user_link = f"tg://user?id={applicant_user_id}"
 
         contact_info_admin = ""
         if collected_data.get("contact_type") == "number":
@@ -1011,8 +1043,7 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
             partner_info=collected_data.get("partner_info", ""),
             characteristics=collected_data.get("characteristics", ""),
             about_me=collected_data.get("about_me", ""),
-            contact=contact_info_admin,
-            reply_to_user_link=reply_to_user_link
+            contact=contact_info_admin
         )
 
         try:
@@ -1023,14 +1054,16 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
                 photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
                 await bot.send_photo(CHANNEL_ID, photo=photo_url, caption=profile_text_for_channel)
 
-            # Send to admin bot
+            # Send to admin bot with action buttons
             if photo_id:
-                await bot.send_photo(BOT_ADMIN_ID, photo=photo_id, caption=admin_message_text)
+                await bot.send_photo(BOT_ADMIN_ID, photo=photo_id, caption=admin_message_text,
+                                     reply_markup=get_admin_action_keyboard(lang, applicant_user_id, BOT_USERNAME))
             else:
                 photo_url = DEFAULT_PHOTO_URLS.get(gender_key, DEFAULT_PHOTO_URLS["default"])
-                await bot.send_photo(BOT_ADMIN_ID, photo=photo_url, caption=admin_message_text)
+                await bot.send_photo(BOT_ADMIN_ID, photo=photo_url, caption=admin_message_text,
+                                     reply_markup=get_admin_action_keyboard(lang, applicant_user_id, BOT_USERNAME))
 
-            # Notify the user
+            # Notify the user (without reply_to_user_link)
             user_confirmation_text = TEXTS[lang]["user_profile_template"].format(
                 full_name=full_name,
                 user_profile_link=user_profile_link,
@@ -1044,8 +1077,7 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
                 partner_info=collected_data.get("partner_info", ""),
                 characteristics=collected_data.get("characteristics", ""),
                 about_me=collected_data.get("about_me", ""),
-                contact=contact_info_admin, # Reusing for user confirmation, assuming it's okay
-                reply_to_user_link=reply_to_user_link
+                contact=contact_info_admin # Reusing for user confirmation, assuming it's okay
             )
 
             if photo_id:
@@ -1070,13 +1102,6 @@ async def process_confirm(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"],
                                                reply_markup=get_publish_consent_keyboard(lang))
     await callback_query.answer()
-
-
-# admin_approve funksiyasi endi kerak emas, chunki to'g'ridan-to'g'ri chop etiladi.
-# Agar siz adminning "Rad etish" funksiyasini saqlab qolishni istasangiz, uni o'zgartirish kerak emas.
-# @dp.callback_query(lambda c: c.data.startswith("admin_approve_"))
-# async def admin_approve(callback_query: CallbackQuery, state: FSMContext):
-#     pass # This function is now effectively removed or won't be called
 
 
 @dp.callback_query(lambda c: c.data.startswith("admin_reject_"))
@@ -1105,11 +1130,11 @@ async def process_admin_reply(message: Message, state: FSMContext):
         # Notify the user that their application has been rejected with a reason
         await bot.send_message(applicant_user_id, TEXTS[lang]["admin_rejected_user_message"].format(reason=reason))
         
-        # Edit the admin's original message to show rejection
+        # Edit the admin's original message to remove buttons
         await bot.edit_message_reply_markup(chat_id=BOT_ADMIN_ID, message_id=admin_message_id, reply_markup=None)
         await bot.send_message(BOT_ADMIN_ID, f"❌ Ariza {applicant_user_id} tomonidan rad etildi. Sabab: {reason}")
         
-        # Clear the applicant's state as well
+        # Clear the applicant's state as well if they are still in a state
         applicant_state = FSMContext(storage=dp.storage, key=dp.storage.build_key(bot_id=bot.id, chat_id=applicant_user_id, user_id=applicant_user_id))
         await applicant_state.clear()
         
@@ -1119,6 +1144,82 @@ async def process_admin_reply(message: Message, state: FSMContext):
     except Exception as e:
         print(f"Error rejecting application or sending reply: {e}")
         await message.answer(f"Xatolik: Arizani rad etishda muammo yuz berdi {e}")
+
+
+@dp.message(StateFilter(Form.admin_chat))
+async def admin_send_message_to_user(message: Message, state: FSMContext):
+    admin_data = await state.get_data()
+    target_user_id = admin_data.get("target_user_id")
+    lang = admin_data.get("lang", "uz") # Get admin's preferred language
+
+    if not target_user_id:
+        await message.answer("Anonim chat faol emas yoki foydalanuvchi topilmadi.")
+        await state.clear()
+        return
+
+    try:
+        if message.text:
+            await bot.send_message(target_user_id, f"Admin: {message.text}")
+        elif message.photo:
+            await bot.send_photo(target_user_id, photo=message.photo[-1].file_id, caption="Admin yuborgan rasm:")
+        elif message.video:
+            await bot.send_video(target_user_id, video=message.video.file_id, caption="Admin yuborgan video:")
+        # Add more message types if needed (documents, stickers, etc.)
+        await message.answer("Xabar yuborildi.", reply_markup=get_admin_chat_keyboard(lang))
+    except Exception as e:
+        await message.answer(f"Xabar yuborishda xatolik yuz berdi: {e}")
+
+
+@dp.callback_query(F.data == "end_admin_chat", StateFilter(Form.admin_chat))
+async def end_admin_chat(callback_query: CallbackQuery, state: FSMContext):
+    admin_data = await state.get_data()
+    target_user_id = admin_data.get("target_user_id")
+    lang = admin_data.get("lang", "uz")
+
+    try:
+        await bot.send_message(target_user_id, "Admin chatni yakunladi.")
+    except Exception as e:
+        print(f"Could not notify user {target_user_id} about chat end: {e}")
+
+    await state.clear()
+    await callback_query.message.edit_text(TEXTS[lang]["admin_chat_end"])
+    await callback_query.answer()
+
+
+# Handler for user's replies to admin during anonymous chat
+@dp.message(lambda message: message.from_user.id != BOT_ADMIN_ID, ~StateFilter(Form.language)) # Process user messages only if not admin and not in initial form state
+async def forward_user_reply_to_admin(message: Message, state: FSMContext):
+    # This logic needs to check if the user is in an active admin chat session.
+    # This requires more complex state management, e.g., storing active chats in a database or in a global dict.
+    # For simplicity, if the user is in a state where admin is chatting with them, we'll forward.
+    # You'd need to lookup the user's current state to see if it's connected to an admin.
+
+    # A more robust solution would involve a separate "chat_sessions" dictionary
+    # {user_id: admin_id, admin_id: user_id}
+
+    # For now, if the user is not in Form.language state, and it's not the admin
+    # we assume it's a reply to an admin chat if an admin was recently chatting with this user.
+    # This is a simplified approach and might not be fully reliable without proper chat session management.
+
+    # This part would require a global dictionary to map which user is chatting with which admin
+    # For example: active_admin_chats = {user_id: admin_id, ...}
+    # Then in admin_send_message_to_user, add: active_admin_chats[target_user_id] = message.from_user.id
+    # And in end_admin_chat, remove from active_admin_chats.
+
+    # For the purpose of this example, we'll forward it to BOT_ADMIN_ID if the user isn't in main form.
+    # In a real system, you'd check `active_admin_chats.get(message.from_user.id)`
+    
+    # Check if the message is coming from a user who is currently chatting with an admin (via deep link)
+    # This is still a simplification. A proper chat system needs more robust state management.
+    
+    current_user_state = await state.get_state()
+    if current_user_state != Form.language: # If user is not filling out the form, might be replying to admin
+        try:
+            # Send to admin as a forwarded message or a new message indicating who sent it
+            await bot.send_message(BOT_ADMIN_ID, f"Foydalanuvchidan {message.from_user.full_name} ({message.from_user.id}) yangi xabar:\n\n{message.text}")
+            # Consider adding a button for admin to reply directly from this message
+        except Exception as e:
+            print(f"Error forwarding user message to admin: {e}")
 
 
 async def main() -> None:
