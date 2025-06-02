@@ -423,7 +423,9 @@ def get_photo_upload_keyboard(lang: str):
 
 def get_channel_check_keyboard(lang: str):
     keyboard = [
-        [InlineKeyboardButton(text=TEXTS[lang]["channel_button_text"], url=f"https://t.me/ommaviy_tanishuv_kanali",url=f"https://t.me/oila_mjm_vodiy_12_viloyat_jmj")],
+        InlineKeyboardButton(text=TEXTS[lang]["channel_button_text_1"], url=f"[https://t.me/ommaviy_tanishuv_kanali](https://t.me/ommaviy_tanishuv_kanali)"),
+        InlineKeyboardButton(text=TEXTS[lang]["channel_button_text_2"], url=f"[https://t.me/oila_mjm_vodiy_12_viloyat_jmj](https://t.me/oila_mjm_vodiy_12_viloyat_jmj)"),
+        InlineKeyboardButton(text=TEXTS[lang]["channel_button_text_3"], url=f"https://t.me/oila_ayollar_mjm_jmj_12_viloyat](https://t.me/oila_ayollar_mjm_jmj_12_viloyat)")
         # REPLACE with your channel link
         [InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")]
     ]
