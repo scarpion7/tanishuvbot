@@ -19,7 +19,7 @@ import aiohttp
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+CHANNEL_ID = int(os.getenv("CHANNEL_ID")) # Bu bot e'lonlarni joylashtiradigan asosiy kanal ID'si
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 WEB_SERVER_HOST = "0.0.0.0"
 WEB_SERVER_PORT = int(os.getenv("PORT", 8000))
@@ -78,9 +78,9 @@ TEXTS = {
         "phone_number_prompt": "Iltimos, telefon raqamingizni kiriting (masalan, +998XXXXXXXXX):",
         "username_prompt": "Iltimos, Telegram username, Instagram linki yoki boshqa profilingizga havolani kiriting (masalan, @username yoki instagram.com/user):",
         "photo_upload_prompt": "Iltimos, profilingiz uchun rasm yuklang (yuzingiz aniq ko'rinishi shart) yoki 'Yuklamaslik' tugmasini bosing:",
-        "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, bizning kanalimizga a'zo bo'ling:",
-        "channel_button_text": "Kanalga a'zo bo'lish",
-        "not_a_member": "Siz kanalga a'zo emassiz. Iltimos, kanalga a'zo bo'lib, 'Tekshirish' tugmasini bosing.",
+        "channel_check_prompt": "Arizangizni kanalga joylashdan oldin, iltimos, quyidagi kanallarga a'zo bo'ling:",
+        "not_a_member": "Siz kanalga a'zo emassiz. Iltimos, kanalga a'zo bo'lib, 'Tekshirish' tugmasini bosing.", # Bu xabar endi ishlatilmaydi
+        "not_a_member_multiple": "Siz quyidagi kanallarga a'zo emassiz:\n{missing_channels}\nIltimos, a'zo bo'lib, 'Tekshirish' tugmasini bosing.",
         "publish_consent_prompt": "Ma'lumotlaringizni kanalga chop etishimizga rozimisiz?",
         "confirm_prompt": "Ma'lumotlaringiz to'g'rimi?",
         "thank_you": "Arizangiz qabul qilindi. Tez orada kanalga joylashtiriladi.",
@@ -96,6 +96,8 @@ TEXTS = {
             "<b>📞 Bog'lanish:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Manba: TopTanish</a>"
         ),
+        "user_profile_link_template": "<a href='t.me/{username}'>@{username}</a>", # Yangi: username orqali link
+        "user_id_link_template": "<a href='tg://user?id={user_id}'>{user_id}</a>", # Yangi: user ID orqali link
         "user_profile_template": (  # NEW: Template for admin's view with user profile link
             "<b>🙋‍♂️ Ism:</b> {full_name} ({user_profile_link})\n\n"
             "<b>📍 Joylashuv:</b> {country}, {region}, {city}\n\n"
@@ -114,7 +116,7 @@ TEXTS = {
         "invalid_characteristics": "Iltimos, xususiyatlaringizni to'g'ri formatda kiriting. Namuna: Yoshi: 25, Bo'yi: 170sm, Og'irligi: 65kg, Sportchi",
         "invalid_callback_input": "Noto'g'ri tanlov. Iltimos, inline tugma orqali tanlang.",
         "select_from_options": "Iltimos, berilgan variantlardan birini tanlang.",
-        "text_too_long": "Matn juda uzun..",
+        "text_too_long": "Matn juda uzun.",
         "other": "Boshqa",
         "back_button": "🔙 Orqaga",
         "skip_photo": "Yuklamaslik",
@@ -134,6 +136,12 @@ TEXTS = {
         "user_rejected": "Arizangiz admin tomonidan rad etildi.",
         "admin_approved_log": "Admin arizani tasdiqladi va kanalga joyladi. Foydalanuvchi ID: {user_id}",
         "admin_rejected_log": "Admin arizani rad etdi. Foydalanuvchi ID: {user_id}",
+        # Yangi: Kanallar ro'yxati
+        "channel_links": [
+            {"name": "TopTanish Kanali", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1001234567890}, # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name": "Oila MJM Vodiy", "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1009876543210}, # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name": "Oila Ayollar MJM", "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1001122334455} # <--- O'zingizning kanal ID'ingizni kiriting
+        ],
     },
     "ru": {
         "start": "Привет! Выберите ваш язык для использования бота:",
@@ -154,9 +162,9 @@ TEXTS = {
         "phone_number_prompt": "Пожалуйста, введите ваш номер телефона (например, +998XXXXXXXXX):",
         "username_prompt": "Пожалуйста, введите имя пользователя Telegram, ссылку на Instagram или другую ссылку на ваш профиль (например, @username или instagram.com/user):",
         "photo_upload_prompt": "Пожалуйста, загрузите фото для вашего профиля (лицо должно быть хорошо видно) или нажмите 'Не загружать':",
-        "channel_check_prompt": "Перед публикацией вашей заявки на канале, пожалуйста, подпишитесь на наш канал:",
-        "channel_button_text": "Подписаться на канал",
-        "not_a_member": "Вы не подписаны на канал. Пожалуйста, подпишитесь на канал и нажмите кнопку 'Проверить'.",
+        "channel_check_prompt": "Перед публикацией вашей заявки на канале, пожалуйста, подпишитесь на следующие каналы:",
+        "not_a_member": "Вы не подписаны на канал. Пожалуйста, подпишитесь на канал и нажмите кнопку 'Проверить'.", # Bu xabar endi ishlatilmaydi
+        "not_a_member_multiple": "Вы не подписаны на следующие каналы:\n{missing_channels}\nПожалуйста, подпишитесь на них и нажмите кнопку 'Проверить'.",
         "publish_consent_prompt": "Вы согласны на публикацию ваших данных на канале?",
         "confirm_prompt": "Ваши данные верны?",
         "thank_you": "Ваша заявка принята. Скоро она будет размещена на канале.",
@@ -172,6 +180,8 @@ TEXTS = {
             "<b>📞 Контакт:</b> {contact}\n\n"
             "<a href='https://t.me/@Tanishuv18plus_bot'>Источник: TopTanish</a>"
         ),
+        "user_profile_link_template": "<a href='t.me/{username}'>@{username}</a>",
+        "user_id_link_template": "<a href='tg://user?id={user_id}'>{user_id}</a>",
         "user_profile_template": (  # NEW: Template for admin's view with user profile link
             "<b>🙋‍♂️ Имя:</b> {full_name} ({user_profile_link})\n\n"
             "<b>📍 Местоположение:</b> {country}, {region}, {city}\n\n"
@@ -210,6 +220,12 @@ TEXTS = {
         "user_rejected": "Ваша заявка отклонена администратором.",
         "admin_approved_log": "Администратор одобрил заявку и опубликовал ее на канале. ID пользователя: {user_id}",
         "admin_rejected_log": "Администратор отклонил заявку. ID пользователя: {user_id}",
+        # Yangi: Kanallar ro'yxati
+        "channel_links": [
+            {"name": "Канал TopTanish", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1001234567890}, # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name": "Семья МЖМ Долина", "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1009876543210}, # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name": "Семья Женщины МЖМ", "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1001122334455} # <--- O'zingizning kanal ID'ingizni kiriting
+        ],
     }
 }
 
@@ -420,13 +436,14 @@ def get_photo_upload_keyboard(lang: str):
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
+
 def get_channel_check_keyboard(lang: str):
-    keyboard = [
-        [InlineKeyboardButton(text="Kanalga a'zo bo'lish 1", url="https://t.me/ommaviy_tanishuv_kanali")],
-        [InlineKeyboardButton(text="Kanalga a'zo bo'lish 2", url="https://t.me/oila_mjm_vodiy_12_viloyat_jmj")],
-        [InlineKeyboardButton(text="Kanalga a'zo bo'lish 3", url="https://t.me/oila_ayollar_mjm_jmj_12_viloyat")],
-        [InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")]
-    ]
+    keyboard = []
+    # TEXTS lug'atidagi 'channel_links' ro'yxatidan kanallar uchun tugmalar yaratamiz
+    for channel_info in TEXTS[lang]["channel_links"]:
+        keyboard.append([InlineKeyboardButton(text=channel_info["name"], url=channel_info["url"])])
+    
+    keyboard.append([InlineKeyboardButton(text="✅ Tekshirish", callback_data="check_channel_member")])
     keyboard.append([InlineKeyboardButton(text=TEXTS[lang]["back_button"], callback_data="back_to_photo_upload")])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
@@ -607,8 +624,8 @@ async def process_language(callback_query: CallbackQuery, state: FSMContext):
     lang = callback_query.data.split("_")[1]
     await state.update_data(lang=lang)
     await state.set_state(Form.gender)
-    await callback_query.message.edit_text(TEXTS[lang]["language_selected"])
-    await callback_query.message.answer(TEXTS[lang]["gender_prompt"], reply_markup=get_gender_keyboard(lang))
+    # await callback_query.message.edit_text(TEXTS[lang]["language_selected"]) # Bu qator ortiqcha, o'chirildi
+    await callback_query.message.edit_text(TEXTS[lang]["gender_prompt"], reply_markup=get_gender_keyboard(lang))
     await callback_query.answer()
 
 
@@ -822,7 +839,8 @@ async def process_phone_number(message: Message, state: FSMContext):
     lang = user_data.get("lang", "uz")
     phone_number = message.text
 
-    if phone_number and phone_number.startswith('+') and phone_number[1:].isdigit() and len(phone_number) > 5:
+    # Telefon raqami formatini tekshirish: +998 bilan boshlanishi va qolgan 9 raqam bo'lishi kerak
+    if phone_number and phone_number.startswith('+') and phone_number[1:].isdigit() and len(phone_number) == 13:
         await state.update_data(phone_number=phone_number)
         contact_method = user_data.get("contact_method")
 
@@ -897,15 +915,32 @@ async def handle_invalid_photo_input(message: Message, state: FSMContext):
 async def check_channel_membership(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
+    user_id = callback_query.from_user.id
 
-    user_status = await bot.get_chat_member(CHANNEL_ID, callback_query.from_user.id)
-    if user_status.status in ["member", "administrator", "creator"]:
+    missing_channels = []
+    # TEXTS lug'atidagi barcha kanallarni tekshiramiz
+    for channel_info in TEXTS[lang]["channel_links"]:
+        channel_id = channel_info["id"]
+        channel_name = channel_info["name"]
+        try:
+            user_status = await bot.get_chat_member(channel_id, user_id)
+            if user_status.status not in ["member", "administrator", "creator"]:
+                missing_channels.append(channel_name)
+        except Exception as e:
+            # Kanal topilmasa yoki boshqa xato bo'lsa (masalan, bot kanalda admin emas)
+            print(f"Kanal {channel_name} ({channel_id}) tekshirishda xato: {e}")
+            missing_channels.append(channel_name) # Xato bo'lsa ham a'zo emas deb hisoblaymiz
+
+    if not missing_channels: # Agar barcha kanallarga a'zo bo'lsa
         await state.set_state(Form.publish_consent)
         await callback_query.message.edit_text(TEXTS[lang]["publish_consent_prompt"],
                                                reply_markup=get_publish_consent_keyboard(lang))
-    else:
-        await callback_query.message.edit_text(TEXTS[lang]["not_a_member"],
-                                               reply_markup=get_channel_check_keyboard(lang))
+    else: # Agar ba'zi kanallarga a'zo bo'lmasa
+        missing_channels_text = "\n".join([f"- {name}" for name in missing_channels])
+        await callback_query.message.edit_text(
+            TEXTS[lang]["not_a_member_multiple"].format(missing_channels=missing_channels_text),
+            reply_markup=get_channel_check_keyboard(lang)
+        )
     await callback_query.answer()
 
 
@@ -920,7 +955,12 @@ async def request_publish_consent(callback_query: CallbackQuery, state: FSMConte
         user_telegram_id = callback_query.from_user.id
         username = callback_query.from_user.username
 
-        user_profile_link = f"<a href='t.me/{username}'>@{username}</a>" if username else f"<a href='tg://user?id={user_telegram_id}'>{user_telegram_id}</a>"
+        # Foydalanuvchi profiliga link yaratish
+        if username:
+            user_profile_link = TEXTS[lang]["user_profile_link_template"].format(username=username)
+        else:
+            user_profile_link = TEXTS[lang]["user_id_link_template"].format(user_id=user_telegram_id)
+
 
         await state.update_data(full_name=full_name, user_telegram_id=user_telegram_id, username=username)
 
@@ -959,7 +999,11 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
     username = user_data.get("username")
 
     # Generate user profile link for admin's view
-    user_profile_link = f"<a href='t.me/{username}'>@{username}</a>" if username else f"<a href='tg://user?id={user_telegram_id}'>{user_telegram_id}</a>"
+    if username:
+        user_profile_link = TEXTS[lang]["user_profile_link_template"].format(username=username)
+    else:
+        user_profile_link = TEXTS[lang]["user_id_link_template"].format(user_id=user_telegram_id)
+
 
     # Construct the final profile message FOR ADMIN (with user profile link and admin review prompt)
     admin_profile_text = TEXTS[lang]["user_profile_template"].format(
@@ -1315,3 +1359,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
