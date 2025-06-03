@@ -138,8 +138,8 @@ TEXTS = {
         # Yangi: Kanallar ro'yxati
         "channel_links": [
             {"name": "TopTanish Rasmiy Kanali",  "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
-            {"name": "MJM MJMJ Oila tanishuv",   "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1002474257516},
-            {"name": "Oila MJM va ayollar",      "url": "https://t.me/oilamjmchat", "id": -1002430518370},
+            #{"name": "MJM MJMJ Oila tanishuv",   "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1002474257516},
+            #{"name": "Oila MJM va ayollar",      "url": "https://t.me/oilamjmchat", "id": -1002430518370},
             {"name": "MJM JMJ Oila tanishuv",     "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1002571964009}
         ],
         "message_received_by_admin": "Xabaringiz adminlarga yuborildi. Tez orada javob olasiz.",
@@ -224,8 +224,8 @@ TEXTS = {
         # Yangi: Kanallar ro'yxati
         "channel_links": [
             {"name": "Официальный канал TopTanish", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
-            {"name": "МЖМ ЖМЖ Семейные Знакомства", "url": "https://tme/oila_mjm_vodiy_12_viloyat_jmj", "id": -1002474257516},
-            {"name": "Семья МЖМ и женщины", "url": "https://t.me/oilamjmchat", "id": -1002430518370},
+            #{"name": "МЖМ ЖМЖ Семейные Знакомства", "url": "https://tme/oila_mjm_vodiy_12_viloyat_jmj", "id": -1002474257516},
+            #{"name": "Семья МЖМ и женщины", "url": "https://t.me/oilamjmchat", "id": -1002430518370},
             {"name": "МЖМ ЖМЖ Семейные Знакомства", "url": "https://tme/oila_ayollar_mjm_jmj_12_viloyat", "id": -1002571964009}
         ],
         "message_received_by_admin": "Ваше сообщение отправлено администраторам. Скоро вы получите ответ.",
