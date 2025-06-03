@@ -407,7 +407,7 @@ def get_looking_for_keyboard(lang: str):
 
 def get_partner_gender_keyboard(lang: str, looking_for_type_key: str = None):
     keyboard = []
-    if looking_for_type_key == "intimate_18":
+    if looking_for_type_key == "intim":
         options = {k: v for k, v in PARTNER_GENDER_OPTIONS.items() if k in ["male", "female", "family"]}
     else:
         options = PARTNER_GENDER_OPTIONS
@@ -725,7 +725,8 @@ async def process_partner_gender(callback_query: CallbackQuery, state: FSMContex
 async def process_partner_age(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    if message.text and "-" in message.text and all(part.isdigit() for part in message.text.split('-')):
+    if message.text and (len(message.text.split('-')) == 2 and all(p.isdigit() for p in message.text.split('-')) or (
+                message.text.endswith('+') and message.text[:-1].isdigit()) or message.text.isdigit()):
         await state.update_data(partner_age=message.text)
         await state.set_state(Form.partner_info)
         await message.answer(TEXTS[lang]["partner_info_prompt"])
@@ -737,7 +738,7 @@ async def process_partner_age(message: Message, state: FSMContext):
 async def process_partner_info(message: Message, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
-    if message.text and len(message.text) <= 500: # Max 500 characters for partner info
+    if message.text and len(message.text) <= 1000: # Max 500 characters for partner info
         await state.update_data(partner_info=message.text)
         await state.set_state(Form.characteristics)
         await message.answer(TEXTS[lang]["characteristics_prompt"])
