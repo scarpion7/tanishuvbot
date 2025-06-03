@@ -138,9 +138,10 @@ TEXTS = {
         "admin_rejected_log": "Admin arizani rad etdi. Foydalanuvchi ID: {user_id}",
         # Yangi: Kanallar ro'yxati
         "channel_links": [
-            {"name": "Tanishuv olami kanali", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1001234567890}, # <--- O'zingizning kanal ID'ingizni kiriting
-            {"name": "Oila MJM Vodiy", "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1009876543210}, # <--- O'zingizning kanal ID'ingizni kiriting
-            {"name": "Oila Ayollar MJM", "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1001122334455} # <--- O'zingizning kanal ID'ingizni kiriting
+            {"name_uz": "TopTanish Rasmiy Kanali", "name_ru": "Официальный канал TopTanish", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
+            {"name_uz": "MJM MJMJ Oila tanishuv", "name_ru": "МЖМ ЖМЖ Семейные Знакомства", "url": "https://t.me/oila_mjm_vodiy_12_viloyat_jmj", "id": -1002474257516},
+            {"name_uz": "Oila MJM va ayollar", "name_ru": "Семья МЖМ и женщины", "url": "https://t.me/oilamjmchat", "id": -1002430518370},
+            {"name_uz": "MJM JMJ Oila tanishuv", "name_ru": "МЖМ ЖМЖ Семейные Знакомства", "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1002571964009}
         ],
     },
     "ru": {
