@@ -126,6 +126,7 @@ TEXTS = {
         "admin_reply_prompt": "Foydalanuvchiga yuboriladigan javob matnini kiriting:",
         "admin_reply_sent": "Javob foydalanuvchiga yuborildi.",
         "admin_reply_error": "Javobni yuborishda xatolik yuz berdi.",
+        "submission_error": "Arizani yuborishda xatolik yuz berdi.", # NEW KEY
         "reply_button_text": "Javob yozish",
         "channel_links": [
             {"name": "TopTanish Rasmiy Kanali",  "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
@@ -201,6 +202,7 @@ TEXTS = {
         "admin_reply_prompt": "Введите текст ответа, который будет отправлен пользователю:",
         "admin_reply_sent": "Ответ отправлен пользователю.",
         "admin_reply_error": "Произошла ошибка при отправке ответа.",
+        "submission_error": "Произошла ошибка при отправке заявки.", # NEW KEY
         "reply_button_text": "Ответить",
         "channel_links": [
             {"name": "Официальный канал TopTanish", "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
@@ -882,12 +884,12 @@ async def process_consent_yes(callback_query: CallbackQuery, state: FSMContext):
     if contact_type == "number":
         contact_info = phone_number
     elif contact_type == "username":
-        if username.startswith('@'):
+        if username and username.startswith('@'):
             contact_info = TEXTS[lang]["user_profile_link_template"].format(username=username[1:])
         else:
             contact_info = f"<a href='{username}'>{username}</a>"
     elif contact_type == "both":
-        if username.startswith('@'):
+        if username and username.startswith('@'):
             contact_info = f"{phone_number}\n{TEXTS[lang]['user_profile_link_template'].format(username=username[1:])}"
         else:
             contact_info = f"{phone_number}\n<a href='{username}'>{username}</a>"
@@ -949,6 +951,7 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     lang = user_data.get("lang", "uz")
     user_id = callback_query.from_user.id
+    full_name = callback_query.from_user.full_name # Add this line
     
     gender = user_data.get("gender")
     country = user_data.get("country")
@@ -969,18 +972,17 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
     if contact_type == "number":
         contact_info = phone_number
     elif contact_type == "username":
-        if username.startswith('@'):
+        if username and username.startswith('@'):
             contact_info = TEXTS[lang]["user_profile_link_template"].format(username=username[1:])
         else:
             contact_info = f"<a href='{username}'>{username}</a>"
     elif contact_type == "both":
-        if username.startswith('@'):
+        if username and username.startswith('@'):
             contact_info = f"{phone_number}\n{TEXTS[lang]['user_profile_link_template'].format(username=username[1:])}"
         else:
             contact_info = f"{phone_number}\n<a href='{username}'>{username}</a>"
     else:
         contact_info = TEXTS[lang]["user_id_link_template"].format(user_id=user_id)
-
 
     profile_text = TEXTS[lang]["profile_template"].format(
         country=country,
@@ -1006,7 +1008,37 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
         else:
             photo_id = DEFAULT_PHOTO_URLS["default"]
 
+    # Construct user profile link for admin notification
+    user_profile_link = TEXTS[lang]["user_id_link_template"].format(user_id=user_id)
+    if username and username.startswith('@'):
+        user_profile_link = TEXTS[lang]["user_profile_link_template"].format(username=username[1:])
+    elif username:
+        user_profile_link = f"<a href='{username}'>{username}</a>"
+
+    # Admin notification text
+    admin_notification_text = TEXTS[lang]["user_profile_template"].format(
+        full_name=full_name,
+        user_profile_link=user_profile_link,
+        country=country,
+        region=region,
+        city=city,
+        gender=gender,
+        looking_for_type=looking_for_type,
+        partner_gender=partner_gender,
+        partner_age=partner_age,
+        partner_info=partner_info,
+        characteristics=characteristics,
+        about_me=about_me,
+        contact=contact_info
+    )
+
+    # Inline keyboard for admin reply
+    reply_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=TEXTS[lang]["reply_button_text"], callback_data=f"admin_reply_to_user_{user_id}")]
+    ])
+
     try:
+        # Send to CHANNEL_ID
         if photo_id and photo_id.startswith("http"):
             await bot.send_photo(
                 chat_id=CHANNEL_ID,
@@ -1027,16 +1059,42 @@ async def process_confirm_yes(callback_query: CallbackQuery, state: FSMContext):
                 text=profile_text,
                 parse_mode=ParseMode.HTML
             )
-        
-        # Foydalanuvchiga muvaffaqiyat xabarini yuborish
-        await callback_query.message.edit_text(TEXTS[lang]["thank_you"], reply_markup=None) 
-        await callback_query.answer() # CallbackQuery ni tugatish
-        await state.clear() # Holatni tozalash
         print(f"Ariza kanalga avtomatik joylandi. Foydalanuvchi ID: {user_id}")
 
+        # Send to BOT_ADMIN_ID
+        if photo_id and photo_id.startswith("http"):
+            await bot.send_photo(
+                chat_id=BOT_ADMIN_ID,
+                photo=photo_id,
+                caption=admin_notification_text,
+                parse_mode=ParseMode.HTML,
+                reply_markup=reply_keyboard
+            )
+        elif photo_id:
+            await bot.send_photo(
+                chat_id=BOT_ADMIN_ID,
+                photo=photo_id,
+                caption=admin_notification_text,
+                parse_mode=ParseMode.HTML,
+                reply_markup=reply_keyboard
+            )
+        else:
+            await bot.send_message(
+                chat_id=BOT_ADMIN_ID,
+                text=admin_notification_text,
+                parse_mode=ParseMode.HTML,
+                reply_markup=reply_keyboard
+            )
+        print(f"Ariza admin ID: {BOT_ADMIN_ID} ga yuborildi. Foydalanuvchi ID: {user_id}")
+
+        # Send success message to user and clear state
+        await callback_query.message.edit_text(TEXTS[lang]["thank_you"], reply_markup=None) 
+        await callback_query.answer() 
+        await state.clear() 
+
     except Exception as e:
-        await callback_query.message.answer(TEXTS[lang]["admin_reply_error"]) # Xatolik haqida foydalanuvchiga xabar berish
-        print(f"Arizani kanalga joylashda xatolik yuz berdi {user_id}: {e}")
+        await callback_query.message.answer(TEXTS[lang]["submission_error"]) # Changed to general submission error
+        print(f"Arizani yuborishda xatolik yuz berdi {user_id}: {e}")
         await callback_query.answer("Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.")
         await state.clear()
 
