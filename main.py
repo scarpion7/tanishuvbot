@@ -92,7 +92,7 @@ TEXTS = {
             "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n\n"
             "<b>📞 Bog'lanish:</b> {contact}\n\n"
-            "<a href='https://t.me/@tanishuv18plus_bot'>Manba: TopTanish</a>"
+            "Manba: <a href='https://t.me/@tanishuv18plus_bot'> TopTanish</a>"
         ),
         "user_profile_link_template": "<a href='t.me/{username}'>@{username}</a>",
         "user_id_link_template": "<a href='tg://user?id={user_id}'>{user_id}</a>",
