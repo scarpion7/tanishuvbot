@@ -130,7 +130,8 @@ TEXTS = {
         "reply_button_text": "Javob yozish",
         "channel_links": [
             {"name": "TopTanish Rasmiy Kanali",  "url": "https://t.me/ommaviy_tanishuv_kanali", "id": -1002683172524},
-            {"name": "MJM JMJ Oila tanishuv",     "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1002571964009}
+            {"name": "MJM JMJ Oila tanishuv",     "url": "https://t.me/oila_ayollar_mjm_jmj_12_viloyat", "id": -1002571964009},
+            {"name": "MJM JMJ Oila tanishuv",     "url": "https://t.me/mjm_mjmj_vodiy_12_viloyat_jmj", "id": -1002705438480}
         ],
         "message_received_by_admin": "Xabaringiz adminlarga yuborildi. Tez orada javob olasiz.",
     },
