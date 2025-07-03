@@ -92,7 +92,7 @@ TEXTS = {
             "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n\n"
             "<b>📞 Bog'lanish:</b> {contact}\n\n"
-            "Manba: <a href='https://t.me/@tanishuv18plus_bot'> TopTanish</a>"
+            "Manba: <a href='https://t.me/@Pastel18_Plusbot'> TopTanish</a>"
         ),
         "user_profile_link_template": "<a href='t.me/{username}'>@{username}</a>",
         "user_id_link_template": "<a href='tg://user?id={user_id}'>{user_id}</a>",
@@ -107,7 +107,7 @@ TEXTS = {
             "<b>📝 O'zi haqida xususiyatlari:</b> {characteristics}\n\n"
             "<b>✍️ O'zi haqida:</b> {about_me}\n\n"
             "<b>📞 Bog'lanish:</b> {contact}\n\n"
-            "Manba: <a href='https://t.me/@Tanishuv18plus_bot'> TopTanish</a>"
+            "Manba: <a href='https://t.me/@Pastel18_Plusbot'> TopTanish</a>"
         ),
         "invalid_input": "Noto'g'ri kiritish. Iltimos, to'g'ri formatda kiriting.",
         "invalid_age_format": "Yoshingizni to'g'ri formatda kiriting (masalan, 25-35).",
@@ -169,7 +169,7 @@ TEXTS = {
             "<b>📝 О себе (характеристики):</b> {characteristics}\n\n"
             "<b>✍️ О себе:</b> {about_me}\n\n"
             "<b>📞 Контакт:</b> {contact}\n\n"
-            "<a href='https://t.me/@tanishuv18plus_bot'>Источник: TopTanish</a>"
+            "<a href='https://t.me/@Pastel18_Plusbot'>Источник: TopTanish</a>"
         ),
         "user_profile_link_template": "<a href='t.me/{username}'>@{username}</a>",
         "user_id_link_template": "<a href='tg://user?id={user_id}'>{user_id}</a>",
@@ -184,7 +184,7 @@ TEXTS = {
             "<b>📝 О себе (характеристики):</b> {characteristics}\n\n"
             "<b>✍️ О себе:</b> {about_me}\n\n"
             "<b>📞 Контакт:</b> {contact}\n\n"
-            "Источник: <a href='https://t.me/@Tanishuv18plus_bot'> TopTanish</a>"
+            "Источник: <a href='https://t.me/@Pastel18_Plusbot'> TopTanish</a>"
         ),
         "invalid_input": "Неверный ввод. Пожалуйста, введите в правильном формате.",
         "invalid_age_format": "Введите возраст в правильном формате (например, 25-35).",
